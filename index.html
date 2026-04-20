@@ -1,33 +1,8 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <meta name="facebook-domain-verification" content="ct7pchswbyfp3h4n8ckjj3k997tv1y" />
-<!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];
-t=b.createElement(e);t.async=!0;
-t.src=v;
-s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-
-fbq('init', '382002759543740');
-fbq('track', 'PageView');
-</script>
-<noscript>
-<img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=382002759543740&ev=PageView&noscript=1"/>
-</noscript>
-<!-- End Meta Pixel Code -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Daring SMM</title>
   <meta name="description" content="Daring SMM — AI-система генерации контента для nail-индустрии. Разработана на основе американской модели продаж beauty-услуг." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -620,7 +595,7 @@ object-position:center top;
 
 .hero-content{
 padding:28px 20px 40px;
-margin-top:-20px;
+margin-top:0;
 }
 
 .hero-title{
@@ -657,12 +632,39 @@ display:none;
 }
 
 nav {
-  padding: 14px 16px;
-  flex-wrap: nowrap;
+  padding: 0;
+  flex-direction: column;
+  align-items: stretch;
+  background: rgba(7,6,10,0.95);
+  backdrop-filter: blur(8px);
 }
-.nav-logo { font-size: 13px; letter-spacing: 2px; white-space: nowrap; }
-.nav-links { gap: 10px; flex-shrink: 0; }
-.nav-links a { font-size: 8px; letter-spacing: 0.5px; }
+.nav-logo {
+  font-size: 14px; letter-spacing: 2px;
+  text-align: center;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid rgba(199,134,154,0.1);
+}
+.nav-links {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 0 4px;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a {
+  font-size: 9px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  padding: 10px 14px;
+  flex-shrink: 0;
+  border-bottom: 2px solid transparent;
+}
+.nav-links a.active {
+  border-bottom-color: var(--rose-2);
+  color: var(--rose-2);
+}
 
 }
 
@@ -947,6 +949,117 @@ nav {
       .price-footer { flex-direction: column; gap: 16px; text-align: center; }
     }
 
+    /* ─── STORIES HERO BLOCK ─── */
+    .stories-block {
+      padding: 120px 0;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, transparent, rgba(255,62,127,0.03) 50%, transparent);
+    }
+    .stories-block-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 700px 500px at 80% 50%, rgba(255,62,127,0.08), transparent 60%),
+        radial-gradient(ellipse 400px 400px at 10% 30%, rgba(199,134,154,0.05), transparent 60%);
+    }
+    .stories-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .stories-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 16px; border: 1px solid rgba(255,62,127,0.4); border-radius: 999px;
+      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+      color: #ff3e7f; background: rgba(255,62,127,0.06); margin-bottom: 24px;
+    }
+    .stories-pill::before {
+      content: ''; width: 5px; height: 5px; border-radius: 50%;
+      background: #ff3e7f; animation: pulse 2s ease-in-out infinite;
+    }
+    .stories-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(38px, 4vw, 60px); font-weight: 300; line-height: 1.02;
+      letter-spacing: -0.5px; margin-bottom: 4px;
+    }
+    .stories-title em { font-style: italic; color: #ff80ab; }
+    .stories-title strong {
+      font-weight: 600; display: block; font-style: normal; font-size: 1.15em;
+      background: linear-gradient(135deg, #fff 20%, #ff80ab 60%, #ff3e7f 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stories-sub {
+      font-size: 13px; line-height: 1.9; color: var(--muted);
+      margin: 24px 0 36px; max-width: 38ch;
+      border-left: 1px solid rgba(255,62,127,0.3); padding-left: 20px;
+    }
+    .stories-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 36px;
+      background: linear-gradient(135deg, rgba(255,62,127,0.25), rgba(255,62,127,0.08));
+      border: 1px solid rgba(255,62,127,0.5); color: #fff;
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 2px; text-transform: uppercase; text-decoration: none;
+      border-radius: 2px; transition: all 0.4s;
+    }
+    .stories-cta:hover {
+      background: linear-gradient(135deg, rgba(255,62,127,0.42), rgba(255,62,127,0.15));
+      border-color: #ff80ab;
+      box-shadow: 0 0 40px rgba(255,62,127,0.22);
+      transform: translateY(-2px);
+    }
+    .stories-right {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      border: 1px solid rgba(255,62,127,0.12);
+    }
+    .stories-feat {
+      padding: 28px 24px; background: rgba(255,255,255,0.02);
+      transition: background 0.3s; position: relative;
+    }
+    .stories-feat:hover { background: rgba(255,62,127,0.05); }
+    .stories-feat::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #ff3e7f, transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .stories-feat:hover::before { opacity: 1; }
+    .stories-feat-icon {
+      font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic;
+      color: #ff3e7f; margin-bottom: 12px; display: block;
+    }
+    .stories-feat-title { font-size: 12px; font-weight: 600; margin-bottom: 6px; color: rgba(255,255,255,0.9); }
+    .stories-feat-text { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+    /* Compact focus section */
+    .focus-compact {
+      padding: 72px 0 100px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .focus-compact-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
+    }
+    .focus-compact-label {
+      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--rose); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .focus-compact-label::after { content: ''; width: 32px; height: 1px; background: var(--rose); }
+    .focus-compact-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 3vw, 40px); font-weight: 300; line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .focus-compact-title em { font-style: italic; color: var(--rose-2); }
+    .focus-compact-sub {
+      font-size: 13px; color: var(--muted); line-height: 1.8; margin-bottom: 28px;
+    }
+
+    @media (max-width: 768px) {
+      .stories-grid { grid-template-columns: 1fr; gap: 48px; }
+      .stories-sub { max-width: 100%; }
+      .focus-compact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .stories-block { padding: 72px 0; }
+      .focus-compact { padding: 56px 0 80px; }
+    }
+
   </style>
 <body>
 
@@ -955,9 +1068,10 @@ nav {
     <div class="nav-logo">Daring<span> · SMM</span></div>
     <div class="nav-links">
       <a onclick="showPage('landing')" class="active" id="nav-landing">Главная</a>
+      <a href="https://daring-smm.ru/stories-generator/" target="_blank" id="nav-stories">Me•code Stories</a>
       <a onclick="showPage('focus')" id="nav-focus">Фокус-группа</a>
       <a onclick="showPage('price')" id="nav-price">Прайс</a>
-      <a href="https://t.me/mecodecontent" target="_blank">Telegram ↗</a>
+      <a href="https://instagram.com/daring.smm" target="_blank">Instagram ↗</a>
     </div>
   </nav>
 
@@ -969,7 +1083,7 @@ nav {
     <!-- HERO -->
     <section class="hero">
       <div class="hero-photo">
-        <img src="photo1.jpg" alt="Daring SMM" />
+        <img src="photo.png" alt="Daring SMM" />
         <div class="lightning-overlay"></div>
       </div>
 
@@ -980,13 +1094,13 @@ nav {
           <span class="big-line">SMM</span>
         </h1>
         <p class="hero-sub fade-in-d3">
-          AI-системы контента для beauty-бизнеса. 
-          Основано на практике работы с nail-индустрией с 2020 года.
+          AI-системы контента для beauty-бизнеса в США.
+          Работаем с мастерами и студиями с 2020 года.
         </p>
         <div class="hero-divider fade-in-d3"></div>
         <div class="hero-cta-row fade-in-d4">
-          <a onclick="showPage('focus')" class="btn-primary">Фокус-группа</a>
-          <a href="https://t.me/mecodecontent" target="_blank" class="btn-ghost">@mecodecontent</a>
+          <a href="https://daring-smm.ru/stories-generator/" target="_blank" class="btn-primary">Попробовать Me•code Stories →</a>
+          <a href="https://instagram.com/daring.smm" target="_blank" class="btn-ghost">@daring.smm</a>
         </div>
       </div>
 
@@ -1043,7 +1157,7 @@ nav {
             </div>
             <div class="feature-card">
               <div class="feature-icon">▷</div>
-              <div class="feature-title">Продажная структура Reels</div>
+              <div class="feature-title">Структура Reels, которая продаёт</div>
               <div class="feature-text">Логика роликов, которая ведёт к записи.</div>
             </div>
             <div class="feature-card">
@@ -1056,43 +1170,86 @@ nav {
       </div>
     </section>
 
-    <!-- SERVICES -->
-    <section class="services">
+    <!-- STORIES BLOCK — главный продукт -->
+    <section class="stories-block">
+      <div class="stories-block-bg"></div>
       <div class="container">
-        <div class="services-header">
-          <div class="section-label" style="justify-content:center">Система контента</div>
-          <h2 class="section-title" style="text-align:center">Что входит в <em>продукт</em></h2>
+        <div class="stories-grid">
+          <div>
+            <div class="stories-pill">Главный продукт · Работает сейчас</div>
+            <h2 class="stories-title">
+              Me<em>•code</em>
+              <strong>Stories</strong>
+            </h2>
+            <p class="stories-sub">
+              AI-генератор сторис для beauty-мастеров. Система определяет архетип вашей аудитории, подбирает стратегию и создаёт готовый текст — продающий, прогревающий или экспертный.
+            </p>
+            <a href="https://daring-smm.ru/stories-generator/" target="_blank" class="stories-cta">
+              Попробовать бесплатно <span>→</span>
+            </a>
+          </div>
+          <div class="stories-right">
+            <div class="stories-feat">
+              <span class="stories-feat-icon">✦</span>
+              <div class="stories-feat-title">Архетип аудитории</div>
+              <div class="stories-feat-text">Система определяет глубинную потребность и страх вашего клиента</div>
+            </div>
+            <div class="stories-feat">
+              <span class="stories-feat-icon">◈</span>
+              <div class="stories-feat-title">4 типа сторис</div>
+              <div class="stories-feat-text">Продающие, прогрев, лайф и экспертные — под каждую задачу</div>
+            </div>
+            <div class="stories-feat">
+              <span class="stories-feat-icon">✿</span>
+              <div class="stories-feat-title">5 тональностей</div>
+              <div class="stories-feat-text">Мири, Ева, игривый, экспертный, дружелюбный — ваш голос</div>
+            </div>
+            <div class="stories-feat">
+              <span class="stories-feat-icon">◇</span>
+              <div class="stories-feat-title">Готово за секунды</div>
+              <div class="stories-feat-text">Опишите нишу и тему — система напишет сторис за вас</div>
+            </div>
+          </div>
         </div>
-        <div class="services-list">
-          <div class="service-row">
-            <span class="service-num">01</span>
-            <span class="service-name">Контент-стратегия</span>
-            <span class="service-desc">Персонализированная логика</span>
-          </div>
-          <div class="service-row">
-            <span class="service-num">02</span>
-            <span class="service-name">Хуки и триггеры</span>
-            <span class="service-desc">Захват внимания</span>
-          </div>
-          <div class="service-row">
-            <span class="service-num">03</span>
-            <span class="service-name">Сценарии Reels</span>
-            <span class="service-desc">Продающая структура</span>
-          </div>
-          <div class="service-row">
-            <span class="service-num">04</span>
-            <span class="service-name">Посты и CTA</span>
-            <span class="service-desc">От охвата к заявке</span>
-          </div>
-          <div class="service-row">
-            <span class="service-num">05</span>
-            <span class="service-name">Позиционирование мастера</span>
-            <span class="service-desc">Уникальный голос бренда</span>
-          </div>
-        </div>
+      </div>
+    </section>
 
-        <div style="text-align:center; margin-top:60px;">
-          <a onclick="showPage('focus')" class="btn-primary">Попасть в закрытый тест →</a>
+    <!-- ФОКУС-ГРУППА — компактно -->
+    <section class="focus-compact">
+      <div class="container">
+        <div class="focus-compact-inner">
+          <div>
+            <div class="focus-compact-label">Закрытый тест</div>
+            <h2 class="focus-compact-title">Фокус-<em>группа</em></h2>
+            <p class="focus-compact-sub">
+              Бесплатный тест полной AI-системы контента для nail-мастеров. 20 участников, отбор по анкете.
+            </p>
+            <a onclick="showPage('focus')" class="btn-primary" style="cursor:pointer;">Подать заявку</a>
+          </div>
+          <div>
+            <div class="services-list" style="margin-top:0;">
+              <div class="service-row" style="padding:20px 0;">
+                <span class="service-num">01</span>
+                <span class="service-name" style="font-size:20px;">Контент-стратегия</span>
+                <span class="service-desc">Персонализированная</span>
+              </div>
+              <div class="service-row" style="padding:20px 0;">
+                <span class="service-num">02</span>
+                <span class="service-name" style="font-size:20px;">Сценарии Reels</span>
+                <span class="service-desc">Сценарии для результата</span>
+              </div>
+              <div class="service-row" style="padding:20px 0;">
+                <span class="service-num">03</span>
+                <span class="service-name" style="font-size:20px;">Хуки и триггеры</span>
+                <span class="service-desc">Захват внимания</span>
+              </div>
+              <div class="service-row" style="padding:20px 0;">
+                <span class="service-num">04</span>
+                <span class="service-name" style="font-size:20px;">Позиционирование</span>
+                <span class="service-desc">Уникальный голос</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1102,7 +1259,7 @@ nav {
       <div class="landing-footer">
         <div class="footer-logo">Daring · SMM</div>
         <div class="footer-copy">Digital Marketing for Beauty in USA · 2025</div>
-        <a href="https://t.me/mecodecontent" target="_blank" class="btn-ghost" style="font-size:11px">@mecodecontent</a>
+        <a href="https://instagram.com/daring.smm" target="_blank" class="btn-ghost" style="font-size:11px">@daring.smm</a>
       </div>
     </div>
 
@@ -1125,13 +1282,12 @@ nav {
           <em>фокус-группа</em>
         </h1>
         <p class="focus-sub fade-in-d3">
-          AI-система генерации контента для nail-индустрии. 
-          Бесплатный тест для русскоговорящих мастеров из стран СНГ.
+          AI-система генерации контента для nail-индустрии.
+          Бесплатный тест для русскоговорящих мастеров.
         </p>
         <div class="focus-pills fade-in-d4">
           <span class="focus-pill">Бесплатный тест</span>
           <span class="focus-pill">Отбор по анкете</span>
-          <span class="focus-pill">Мастера из СНГ</span>
           <span class="focus-pill">Nail-индустрия</span>
         </div>
         <div class="fade-in-d4">
@@ -1166,7 +1322,7 @@ nav {
             <div class="why-card-text">Смыслы и формулировки, которые удерживают внимание.</div>
           </div>
           <div class="why-card">
-            <div class="why-card-title">Продажная структура Reels</div>
+            <div class="why-card-title">Структура Reels, которая продаёт</div>
             <div class="why-card-text">Логика роликов, которая ведёт к записи.</div>
           </div>
           <div class="why-card">
@@ -1197,7 +1353,7 @@ nav {
 
             <form id="focusForm" method="POST">
               <input class="f-field" name="name" placeholder="Имя" required />
-              <input class="f-field" name="telegram" placeholder="Telegram (@username)" required />
+              <input class="f-field" name="instagram" placeholder="Instagram" required />
               <input class="f-field" name="city" placeholder="Город" />
               <input class="f-field" name="level" placeholder="Уровень (начинающий / mid / pro)" />
               <input class="f-field" name="clients" placeholder="Количество клиентов в месяц" />
@@ -1277,11 +1433,11 @@ nav {
               <div class="mc-cur">₽</div>
             </div>
             <div class="mc-period">в месяц · отмена в любой момент</div>
-            <a href="https://t.me/daringpromo" target="_blank" class="btn-primary">Подключить доступ</a>
+            <a href="https://instagram.com/daring.smm" target="_blank" class="btn-primary">Подключить доступ</a>
           </div>
           <div class="mc-right">
             <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Персонализированная контент-стратегия</div><div class="mc-feat-sub">Под ваш стиль, аудиторию и позиционирование</div></div></div>
-            <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Хуки, триггеры и сценарии Reels</div><div class="mc-feat-sub">Продающая структура роликов, которая ведёт к записи</div></div></div>
+            <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Хуки, триггеры и сценарии Reels</div><div class="mc-feat-sub">Структура роликов, которая ведёт к записи</div></div></div>
             <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Посты, CTA и хештеги</div><div class="mc-feat-sub">Готовый контент для публикаций</div></div></div>
             <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Сегментация аудитории</div><div class="mc-feat-sub">Разные сообщения для разных типов клиентов</div></div></div>
             <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Ежемесячное обновление системы</div><div class="mc-feat-sub">Продукт развивается вместе с вашим бизнесом</div></div></div>
@@ -1301,7 +1457,7 @@ nav {
               <div class="cu-cur">₽</div>
             </div>
             <div class="cu-period">Индивидуальное КП после брифинга</div>
-            <a href="https://t.me/daringpromo" target="_blank" class="cu-cta">Обсудить проект</a>
+            <a href="https://instagram.com/daring.smm" target="_blank" class="cu-cta">Обсудить проект</a>
           </div>
           <div class="cu-right">
             <div class="cu-feat"><div class="cu-dot"></div><div><div class="cu-feat-title">Адаптация под нишу и методологию школы</div><div class="cu-feat-sub">Глубокий брифинг и анализ целевой аудитории</div></div></div>
@@ -1315,7 +1471,7 @@ nav {
         <div class="price-note">
           <div class="price-note-icon">✦</div>
           <div class="price-note-text">
-            <strong>Есть вопросы?</strong> Напишите в Telegram <strong style="color:var(--rose-2);">@daringpromo</strong> — подберём подходящий формат и ответим на всё.
+            <strong>Есть вопросы?</strong> Напишите в Instagram <strong style="color:var(--rose-2);">@daring.smm</strong> — подберём подходящий формат и ответим на всё.
           </div>
         </div>
 
@@ -1326,10 +1482,8 @@ nav {
       <div class="price-footer">
         <div class="footer-logo">Daring · SMM</div>
         <div class="footer-copy">Digital Marketing for Beauty in USA · 2025</div>
-        <a href="https://t.me/mecodecontent" target="_blank" class="btn-ghost" style="font-size:11px">@mecodecontent</a>
+        <a href="https://instagram.com/daring.smm" target="_blank" class="btn-ghost" style="font-size:11px">@daring.smm</a>
       </div>
-    </div>
-
       <div style="padding-bottom:32px; text-align:center; font-size:11px; letter-spacing:1px; color:rgba(255,255,255,0.28); border-top:1px solid rgba(255,255,255,0.04); padding-top:20px;">
         Фоминых Ирина Насибулловна · ИНН 744801521222
       </div>
@@ -1345,12 +1499,12 @@ nav {
       Мы получили вашу анкету и рассмотрим её в ближайшее время.
     </div>
     <div class="success-note">
-      Подпишитесь на <strong style="color: var(--rose-2);">@mecodecontent</strong>, 
+      Подпишитесь на <strong style="color: var(--rose-2);">@daring.smm</strong>, 
       чтобы не пропустить сообщение и обновления.
     </div>
     <div class="success-actions">
-      <a href="https://t.me/mecodecontent" target="_blank" rel="noopener noreferrer" class="btn-primary">
-        Перейти в Telegram
+      <a href="https://instagram.com/daring.smm" target="_blank" rel="noopener noreferrer" class="btn-primary">
+        Перейти в Instagram
       </a>
     </div>
   </div>
