@@ -1,1582 +1,260 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Daring SMM</title>
-  <meta name="description" content="Daring SMM — AI-система генерации контента для nail-индустрии. Разработана на основе американской модели продаж beauty-услуг." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #07060a;
-      --rose: #C7869A;
-      --rose-2: #e8afc0;
-      --rose-dark: #8a4a5e;
-      --gold: #d4b896;
-      --text: rgba(255,255,255,0.94);
-      --muted: rgba(255,255,255,0.62);
-      --border: rgba(199,134,154,0.2);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-    }
-
-    /* ─── PAGE SYSTEM ─── */
-    .page { display: none; min-height: 100vh; }
-    .page.active { display: block; }
-
-    /* ─── NAV ─── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 48px;
-      background: linear-gradient(180deg, rgba(7,6,10,0.9) 0%, transparent 100%);
-      backdrop-filter: blur(4px);
-    }
-    .nav-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px; font-weight: 300; letter-spacing: 3px;
-      color: var(--rose-2);
-      text-transform: uppercase;
-    }
-    .nav-logo span { color: var(--muted); font-size: 14px; letter-spacing: 2px; }
-    .nav-links { display: flex; gap: 32px; }
-    .nav-links a {
-      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-      color: var(--muted); text-decoration: none; cursor: pointer;
-      transition: color 0.3s;
-    }
-    .nav-links a:hover, .nav-links a.active { color: var(--rose-2); }
-
-    /* ─── PAGE 1: LANDING ─── */
-    #page-landing {
-      position: relative;
-      background: #07060a;
-    }
-
-    /* HERO */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      overflow: hidden;
-    }
-
-    /* Left: photo panel */
-    .hero-photo {
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-photo img {
-      width: 100%; height: 100%;
-      object-fit: cover; object-position: center top;
-      display: block;
-    }
-    .hero-photo::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent 60%, var(--bg) 100%),
-                  linear-gradient(0deg, rgba(7,6,10,0.3) 0%, transparent 40%);
-    }
-
-    /* Sparkling lightning overlay on photo */
-    .lightning-overlay {
-      position: absolute; inset: 0; z-index: 2; pointer-events: none;
-      background: 
-        radial-gradient(ellipse 300px 200px at 80% 20%, rgba(199,134,154,0.15), transparent 70%),
-        radial-gradient(ellipse 200px 300px at 20% 70%, rgba(199,134,154,0.08), transparent 70%);
-      mix-blend-mode: screen;
-    }
-
-    /* Right: content */
-    .hero-content {
-      position: relative; z-index: 2;
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 120px 64px 80px 48px;
-    }
-
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 10px;
-      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--rose);
-      margin-bottom: 28px;
-    }
-    .hero-eyebrow::before {
-      content: '';
-      display: block; width: 32px; height: 1px;
-      background: var(--rose);
-    }
-
-    .hero-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(52px, 5vw, 82px);
-      font-weight: 300; line-height: 0.95;
-      letter-spacing: -1px;
-      margin-bottom: 8px;
-    }
-    .hero-title em {
-      font-style: italic; color: var(--rose-2);
-    }
-    .hero-title .big-line {
-      display: block; font-size: clamp(68px, 7vw, 110px);
-      font-weight: 600; line-height: 0.9;
-      background: linear-gradient(135deg, #fff 30%, var(--rose-2) 70%, var(--rose) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-sub {
-      margin-top: 28px;
-      font-size: 13px; line-height: 1.8; letter-spacing: 0.5px;
-      color: var(--muted);
-      max-width: 36ch;
-      border-left: 1px solid var(--rose-dark);
-      padding-left: 20px;
-    }
-
-    .hero-divider {
-      width: 60px; height: 1px;
-      background: linear-gradient(90deg, var(--rose), transparent);
-      margin: 36px 0;
-    }
-
-    .hero-cta-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-
-    .btn-primary {
-      padding: 16px 36px;
-      background: linear-gradient(135deg, rgba(199,134,154,0.3), rgba(199,134,154,0.1));
-      border: 1px solid rgba(199,134,154,0.6);
-      color: #fff;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 11px; font-weight: 500; letter-spacing: 2.5px; text-transform: uppercase;
-      cursor: pointer;
-      border-radius: 2px;
-      transition: all 0.4s ease;
-      text-decoration: none; display: inline-block;
-    }
-    .btn-primary:hover {
-      background: linear-gradient(135deg, rgba(199,134,154,0.5), rgba(199,134,154,0.2));
-      border-color: var(--rose-2);
-      box-shadow: 0 0 40px rgba(199,134,154,0.2);
-      transform: translateY(-2px);
-    }
-
-    .btn-ghost {
-      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-      color: var(--muted); cursor: pointer;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-      transition: color 0.3s;
-    }
-    .btn-ghost:hover { color: var(--rose-2); }
-    .btn-ghost::after { content: '→'; }
-
-    /* Floating badges */
-    .hero-badges {
-      position: absolute; right: 48px; bottom: 80px; z-index: 10;
-      display: flex; flex-direction: column; gap: 12px; align-items: flex-end;
-    }
-    .badge {
-      padding: 10px 18px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(199,134,154,0.25);
-      border-radius: 2px;
-      font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--rose-2);
-      backdrop-filter: blur(10px);
-    }
-
-    /* Decorative vertical text */
-    .vert-text {
-      position: absolute; left: 20px; top: 50%; transform: translateY(-50%) rotate(-90deg);
-      font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
-      color: rgba(199,134,154,0.35);
-      white-space: nowrap; z-index: 10;
-    }
-
-    /* ─── ABOUT SECTION ─── */
-    .about {
-      position: relative;
-      padding: 120px 0;
-      overflow: hidden;
-    }
-    .about-bg {
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 800px 600px at 50% 50%, rgba(199,134,154,0.06), transparent 70%);
-      pointer-events: none;
-    }
-
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
-
-    .about-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
-    }
-
-    .section-label {
-      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--rose); margin-bottom: 20px;
-      display: flex; align-items: center; gap: 12px;
-    }
-    .section-label::after {
-      content: ''; flex: 1; max-width: 40px; height: 1px;
-      background: var(--rose);
-    }
-
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(36px, 3.5vw, 52px);
-      font-weight: 300; line-height: 1.1;
-      letter-spacing: -0.5px;
-      margin-bottom: 24px;
-    }
-    .section-title em { font-style: italic; color: var(--rose-2); }
-
-    .section-body {
-      font-size: 14px; line-height: 1.9; color: var(--muted);
-      margin-bottom: 20px;
-    }
-
-    .stat-row { display: flex; gap: 40px; margin-top: 40px; }
-    .stat-item { text-align: center; }
-    .stat-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 48px; font-weight: 300; line-height: 1;
-      color: var(--rose-2);
-    }
-    .stat-label {
-      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-      color: var(--muted); margin-top: 4px;
-    }
-
-    /* Feature cards */
-    .features-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
-      border: 1px solid rgba(199,134,154,0.15);
-    }
-    .feature-card {
-      padding: 32px;
-      background: rgba(255,255,255,0.02);
-      border: none;
-      transition: background 0.3s;
-    }
-    .feature-card:hover { background: rgba(199,134,154,0.06); }
-    .feature-icon {
-      width: 32px; height: 32px;
-      border: 1px solid rgba(199,134,154,0.4);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; margin-bottom: 16px;
-    }
-    .feature-title {
-      font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
-      margin-bottom: 8px; color: rgba(255,255,255,0.9);
-    }
-    .feature-text {
-      font-size: 12px; line-height: 1.7; color: var(--muted);
-    }
-
-    /* ─── SERVICES ─── */
-    .services {
-      padding: 120px 0;
-      background: linear-gradient(180deg, transparent, rgba(199,134,154,0.04) 50%, transparent);
-    }
-    .services-header { text-align: center; margin-bottom: 64px; }
-    .services-list { display: flex; flex-direction: column; gap: 1px; }
-    .service-row {
-      display: grid; grid-template-columns: 60px 1fr auto;
-      align-items: center; gap: 32px;
-      padding: 28px 0;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      cursor: default;
-      transition: all 0.3s;
-    }
-    .service-row:hover { padding-left: 16px; }
-    .service-row:hover .service-name { color: var(--rose-2); }
-    .service-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 13px; color: var(--rose); letter-spacing: 1px;
-    }
-    .service-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px; font-weight: 300; letter-spacing: -0.3px;
-      transition: color 0.3s;
-    }
-    .service-desc {
-      font-size: 12px; color: var(--muted); letter-spacing: 0.5px; text-align: right;
-    }
-
-    /* ─── FOOTER (page 1) ─── */
-    .landing-footer {
-      padding: 60px 0;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .footer-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px; font-weight: 300; letter-spacing: 3px;
-      color: var(--rose-2);
-    }
-    .footer-copy { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
-
-    /* ─── PAGE 2: FOCUS GROUP ─── */
-    #page-focus {
-      background: var(--bg);
-    }
-
-    .focus-hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      text-align: center;
-      overflow: hidden;
-      padding: 120px 48px 80px;
-    }
-
-    .focus-hero-bg {
-      position: absolute; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 900px 500px at 50% 0%, rgba(199,134,154,0.18), transparent 60%),
-        radial-gradient(ellipse 600px 400px at 20% 80%, rgba(199,134,154,0.08), transparent 60%),
-        radial-gradient(ellipse 600px 400px at 80% 70%, rgba(199,134,154,0.06), transparent 60%);
-    }
-
-    /* Animated particles */
-    .particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-    .particle {
-      position: absolute; width: 1px; height: 1px;
-      background: rgba(199,134,154,0.6); border-radius: 50%;
-      animation: float-particle linear infinite;
-    }
-    @keyframes float-particle {
-      0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-20px) translateX(20px); opacity: 0; }
-    }
-
-    .focus-label {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 8px 20px;
-      border: 1px solid rgba(199,134,154,0.3);
-      border-radius: 999px;
-      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--rose); margin-bottom: 32px;
-      background: rgba(199,134,154,0.05);
-    }
-    .focus-label::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%;
-      background: var(--rose);
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.7); }
-    }
-
-    .focus-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(52px, 6vw, 90px);
-      font-weight: 300; line-height: 0.95;
-      letter-spacing: -1px;
-      margin-bottom: 24px;
-    }
-    .focus-title em { font-style: italic; color: var(--rose-2); display: block; }
-
-    .focus-sub {
-      font-size: 15px; line-height: 1.8; color: var(--muted);
-      max-width: 50ch; margin: 0 auto 48px;
-    }
-
-    .focus-pills {
-      display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
-      margin-bottom: 56px;
-    }
-    .focus-pill {
-      padding: 10px 22px;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 999px;
-      font-size: 12px; letter-spacing: 1px; color: var(--muted);
-      background: rgba(255,255,255,0.03);
-    }
-
-    .scroll-hint {
-      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
-    }
-    .scroll-line {
-      width: 1px; height: 40px;
-      background: linear-gradient(180deg, var(--rose), transparent);
-      animation: scroll-anim 2s ease-in-out infinite;
-    }
-    @keyframes scroll-anim {
-      0%, 100% { transform: scaleY(1); opacity: 1; }
-      50% { transform: scaleY(0.5); opacity: 0.5; }
-    }
-
-    /* Why section */
-    .why-section { padding: 120px 0; }
-    .why-grid {
-      display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px;
-      border: 1px solid rgba(199,134,154,0.12); margin-top: 60px;
-    }
-    .why-card {
-      padding: 36px 24px;
-      background: rgba(255,255,255,0.02);
-      transition: background 0.3s;
-      position: relative;
-    }
-    .why-card:hover { background: rgba(199,134,154,0.06); }
-    .why-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--rose), transparent);
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .why-card:hover::before { opacity: 1; }
-    .why-card-title { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
-    .why-card-text { font-size: 12px; line-height: 1.7; color: var(--muted); }
-
-    /* What's included */
-    .included-section { padding: 80px 0 120px; }
-    .included-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-      margin-top: 60px;
-    }
-
-    /* Form panel */
-    .form-panel {
-      padding: 56px;
-      border: 1px solid rgba(199,134,154,0.15);
-      background: rgba(255,255,255,0.02);
-      position: relative; overflow: hidden;
-    }
-    .form-panel::before {
-      content: '';
-      position: absolute; top: -100px; right: -100px;
-      width: 300px; height: 300px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(199,134,154,0.12), transparent 70%);
-      pointer-events: none;
-    }
-    .form-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 38px; font-weight: 300; margin-bottom: 8px;
-    }
-    .form-sub { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; }
-
-    .f-field {
-      width: 100%; padding: 16px 18px;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 2px;
-      color: var(--text);
-      font-family: 'Montserrat', sans-serif; font-size: 13px;
-      outline: none; resize: vertical;
-      transition: border-color 0.3s, box-shadow 0.3s;
-      margin-bottom: 10px;
-      display: block;
-    }
-    .f-field::placeholder { color: rgba(255,255,255,0.35); letter-spacing: 0.5px; }
-    .f-field:focus {
-      border-color: rgba(199,134,154,0.6);
-      box-shadow: 0 0 0 4px rgba(199,134,154,0.08);
-    }
-
-    .f-btn {
-      width: 100%; margin-top: 8px;
-      padding: 18px;
-      background: linear-gradient(135deg, rgba(199,134,154,0.25), rgba(199,134,154,0.1));
-      border: 1px solid rgba(199,134,154,0.5);
-      color: #fff;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 11px; font-weight: 500; letter-spacing: 2.5px; text-transform: uppercase;
-      cursor: pointer; border-radius: 2px;
-      transition: all 0.4s;
-    }
-    .f-btn:hover {
-      background: linear-gradient(135deg, rgba(199,134,154,0.4), rgba(199,134,154,0.2));
-      box-shadow: 0 8px 30px rgba(199,134,154,0.15);
-    }
-    .f-fine {
-      font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-top: 10px;
-      letter-spacing: 0.3px;
-    }
-    .f-status { display: none; margin-top: 12px; font-size: 13px; color: rgba(255,255,255,0.8); }
-
-    /* Info panel */
-    .info-panel {
-      padding: 56px;
-      border: 1px solid rgba(199,134,154,0.1);
-      background: linear-gradient(180deg, rgba(199,134,154,0.05), transparent);
-      display: flex; flex-direction: column; gap: 32px;
-    }
-    .info-section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px; font-weight: 300; margin-bottom: 20px;
-    }
-    .info-list { list-style: none; }
-    .info-list li {
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.85);
-      display: flex; align-items: flex-start; gap: 12px;
-    }
-    .info-list li::before {
-      content: '—';
-      color: var(--rose); flex-shrink: 0; margin-top: 1px;
-    }
-
-    .info-highlight {
-      padding: 24px;
-      border: 1px solid rgba(199,134,154,0.25);
-      background: rgba(199,134,154,0.06);
-      font-size: 13px; line-height: 1.8; color: rgba(255,255,255,0.85);
-    }
-    .info-highlight strong { color: var(--rose-2); font-weight: 500; }
-
-    .focus-footer {
-      padding: 60px 0;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      text-align: center;
-    }
-    .focus-footer p {
-      font-size: 11px; color: var(--muted); letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    /* ─── ANIMATIONS ─── */
-    @keyframes fade-up {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-in { animation: fade-up 0.8s ease forwards; }
-    .fade-in-d1 { animation-delay: 0.1s; opacity: 0; animation: fade-up 0.8s 0.1s ease forwards; }
-    .fade-in-d2 { animation-delay: 0.25s; opacity: 0; animation: fade-up 0.8s 0.25s ease forwards; }
-    .fade-in-d3 { animation-delay: 0.4s; opacity: 0; animation: fade-up 0.8s 0.4s ease forwards; }
-    .fade-in-d4 { animation-delay: 0.55s; opacity: 0; animation: fade-up 0.8s 0.55s ease forwards; }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 1024px) {
-      nav { padding: 18px 24px; }
-      .hero { grid-template-columns: 1fr; min-height: auto; }
-      .hero-photo { height: 70vw; max-height: 600px; }
-      .hero-content { padding: 60px 24px 60px; }
-      .hero-badges { display: none; }
-      .about-grid { grid-template-columns: 1fr; gap: 48px; }
-      .why-grid { grid-template-columns: repeat(2, 1fr); }
-      .included-grid { grid-template-columns: 1fr; }
-      .container { padding: 0 24px; }
-    }
-    @media (max-width: 640px) {
-
-.hero{
-display:block;
-}
-
-.hero-photo{
-height:58vh;
-min-height:380px;
-max-height:520px;
-}
-
-.hero-photo img{
-object-fit:cover;
-object-position:center top;
-}
-
-.hero-content{
-padding:28px 20px 40px;
-margin-top:0;
-}
-
-.hero-title{
-font-size:34px;
-line-height:0.95;
-}
-
-.hero-title .big-line{
-font-size:56px;
-}
-
-.hero-sub{
-font-size:13px;
-line-height:1.7;
-}
-
-.hero-cta-row{
-flex-direction:column;
-gap:12px;
-}
-
-.btn-primary,
-.btn-ghost{
-width:100%;
-justify-content:center;
-}
-
-.vert-text{
-display:none;
-}
-
-.hero-badges{
-display:none;
-}
-
-nav {
-  padding: 0;
-  flex-direction: column;
-  align-items: stretch;
-  background: rgba(7,6,10,0.95);
-  backdrop-filter: blur(8px);
-}
-.nav-logo {
-  font-size: 14px; letter-spacing: 2px;
-  text-align: center;
-  padding: 14px 16px 10px;
-  border-bottom: 1px solid rgba(199,134,154,0.1);
-}
-.nav-links {
-  display: flex;
-  gap: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding: 0 4px;
-}
-.nav-links::-webkit-scrollbar { display: none; }
-.nav-links a {
-  font-size: 9px;
-  letter-spacing: 1px;
-  white-space: nowrap;
-  padding: 10px 14px;
-  flex-shrink: 0;
-  border-bottom: 2px solid transparent;
-}
-.nav-links a.active {
-  border-bottom-color: var(--rose-2);
-  color: var(--rose-2);
-}
-
-}
-
-    .success-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(7,6,10,0.72);
-  backdrop-filter: blur(8px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  z-index: 9999;
-}
-
-.success-modal.active {
-  display: flex;
-}
-
-.success-box {
-  width: min(520px, 100%);
-  background: linear-gradient(180deg, rgba(18,14,22,0.96), rgba(10,8,14,0.98));
-  border: 1px solid rgba(199,134,154,0.35);
-  box-shadow: 0 20px 80px rgba(0,0,0,0.45);
-  padding: 36px 28px;
-  position: relative;
-  text-align: center;
-}
-
-.success-close {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  background: transparent;
-  border: none;
-  color: rgba(255,255,255,0.55);
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.success-close:hover {
-  color: #fff;
-}
-
-.success-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(34px, 4vw, 46px);
-  font-weight: 300;
-  color: rgba(255,255,255,0.96);
-  margin-bottom: 14px;
-}
-
-.success-text {
-  font-size: 14px;
-  line-height: 1.8;
-  color: rgba(255,255,255,0.78);
-  margin-bottom: 14px;
-}
-
-.success-note {
-  font-size: 13px;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.58);
-  margin-bottom: 24px;
-}
-
-.success-actions {
-  display: flex;
-  justify-content: center;
-}
-
-    /* ─── PAGE 3: PRICE ─── */
-    .price-eyebrow {
-      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--rose); margin-bottom: 24px;
-      display: inline-flex; align-items: center; gap: 10px;
-    }
-    .price-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--rose); }
-
-    .price-hero {
-      position: relative; min-height: 44vh;
-      display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 160px 48px 80px;
-      overflow: hidden;
-    }
-    .price-hero-bg {
-      position: absolute; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 900px 400px at 50% 0%, rgba(199,134,154,0.16), transparent 55%),
-        radial-gradient(ellipse 500px 500px at 10% 80%, rgba(199,134,154,0.06), transparent 60%);
-    }
-    .price-hero::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(199,134,154,0.3) 30%, rgba(199,134,154,0.3) 70%, transparent);
-    }
-    .price-h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(52px, 6vw, 84px); font-weight: 300; line-height: 0.95;
-      letter-spacing: -1px; margin-bottom: 20px;
-    }
-    .price-h1 em { font-style: italic; color: var(--rose-2); }
-    .price-lead {
-      font-size: 13px; line-height: 1.9; color: var(--muted);
-      max-width: 44ch; margin: 0 auto; letter-spacing: 0.3px;
-    }
-
-    .price-section { padding: 90px 0 120px; }
-
-    .price-cat {
-      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--rose); margin-bottom: 32px;
-      display: flex; align-items: center; gap: 12px;
-    }
-    .price-cat::after { content: ''; flex: 1; height: 1px; background: rgba(199,134,154,0.2); }
-
-    /* ── Me Code card ── */
-    .mc-card {
-      display: grid; grid-template-columns: 1fr 1fr;
-      border: 1px solid rgba(199,134,154,0.22);
-      position: relative; overflow: hidden;
-      transition: border-color 0.4s;
-      margin-bottom: 64px;
-    }
-    .mc-card:hover { border-color: rgba(199,134,154,0.42); }
-    .mc-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--rose-dark), var(--rose-2), var(--gold), transparent);
-    }
-    .mc-left {
-      padding: 52px 52px; background: rgba(255,255,255,0.02);
-      position: relative; overflow: hidden;
-    }
-    .mc-left::after {
-      content: ''; position: absolute; top: -80px; right: -80px;
-      width: 260px; height: 260px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(199,134,154,0.1), transparent 70%);
-      pointer-events: none;
-    }
-    .mc-pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 14px; border: 1px solid rgba(199,134,154,0.35); border-radius: 999px;
-      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--rose); background: rgba(199,134,154,0.06); margin-bottom: 24px;
-    }
-    .mc-pill::before {
-      content: ''; width: 5px; height: 5px; border-radius: 50%;
-      background: var(--rose); animation: pulse 2s ease-in-out infinite;
-    }
-    .mc-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 50px; font-weight: 300; line-height: 1; letter-spacing: -1px; margin-bottom: 4px;
-    }
-    .mc-name span { color: var(--rose-2); font-style: italic; }
-    .mc-tag { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 32px; }
-    .mc-price-row { display: flex; align-items: flex-end; gap: 6px; margin-bottom: 6px; }
-    .mc-price {
-      font-family: 'Cormorant Garamond', serif; font-size: 66px; font-weight: 600; line-height: 1;
-      background: linear-gradient(135deg, #fff 30%, var(--rose-2) 70%, var(--rose) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .mc-cur {
-      font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300;
-      color: var(--muted); padding-bottom: 10px;
-    }
-    .mc-period { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 36px; }
-    .mc-right {
-      padding: 52px 52px; border-left: 1px solid rgba(199,134,154,0.12);
-      display: flex; flex-direction: column; justify-content: center;
-    }
-    .mc-feat { display: flex; gap: 16px; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .mc-feat:last-child { border-bottom: none; }
-    .mc-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--rose); flex-shrink: 0; margin-top: 7px; }
-    .mc-feat-title { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.85); }
-    .mc-feat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-    /* ── Custom card ── */
-    .cu-card {
-      display: grid; grid-template-columns: 1fr 1fr;
-      border: 1px solid rgba(212,184,150,0.2);
-      position: relative; overflow: hidden;
-      transition: border-color 0.4s;
-    }
-    .cu-card:hover { border-color: rgba(212,184,150,0.38); }
-    .cu-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--gold), rgba(212,184,150,0.3), transparent);
-    }
-    .cu-left {
-      padding: 52px 52px; background: rgba(212,184,150,0.02);
-      position: relative; overflow: hidden;
-    }
-    .cu-left::after {
-      content: ''; position: absolute; top: -80px; right: -80px;
-      width: 260px; height: 260px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(212,184,150,0.08), transparent 70%);
-      pointer-events: none;
-    }
-    .cu-pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 14px; border: 1px solid rgba(212,184,150,0.35); border-radius: 999px;
-      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--gold); background: rgba(212,184,150,0.05); margin-bottom: 24px;
-    }
-    .cu-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 44px; font-weight: 300; line-height: 1.05; letter-spacing: -0.5px; margin-bottom: 4px;
-    }
-    .cu-name span { color: var(--gold); font-style: italic; }
-    .cu-tag { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 32px; }
-    .cu-from { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-    .cu-price-row { display: flex; align-items: flex-end; gap: 6px; margin-bottom: 6px; }
-    .cu-price {
-      font-family: 'Cormorant Garamond', serif; font-size: 58px; font-weight: 600; line-height: 1;
-      background: linear-gradient(135deg, #fff 20%, var(--gold) 60%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .cu-cur {
-      font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300;
-      color: var(--muted); padding-bottom: 8px;
-    }
-    .cu-period { font-size: 11px; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 36px; line-height: 1.7; }
-    .cu-cta {
-      display: inline-block; padding: 14px 32px;
-      background: linear-gradient(135deg, rgba(212,184,150,0.18), rgba(212,184,150,0.06));
-      border: 1px solid rgba(212,184,150,0.45); color: var(--gold);
-      font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 500;
-      letter-spacing: 2.5px; text-transform: uppercase; text-decoration: none;
-      border-radius: 2px; transition: all 0.4s;
-    }
-    .cu-cta:hover {
-      background: linear-gradient(135deg, rgba(212,184,150,0.3), rgba(212,184,150,0.12));
-      border-color: var(--gold); color: #fff;
-      box-shadow: 0 0 36px rgba(212,184,150,0.14); transform: translateY(-2px);
-    }
-    .cu-right {
-      padding: 52px 52px; border-left: 1px solid rgba(212,184,150,0.1);
-      display: flex; flex-direction: column; justify-content: center;
-    }
-    .cu-feat { display: flex; gap: 16px; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
-    .cu-feat:last-child { border-bottom: none; }
-    .cu-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 7px; }
-    .cu-feat-title { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.85); }
-    .cu-feat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-    .price-note {
-      margin-top: 52px; padding: 28px 36px;
-      border: 1px solid rgba(255,255,255,0.07); border-left: 2px solid rgba(199,134,154,0.5);
-      background: rgba(255,255,255,0.02);
-      display: flex; align-items: center; gap: 20px;
-    }
-    .price-note-icon { font-size: 18px; color: var(--rose-2); flex-shrink: 0; }
-    .price-note-text { font-size: 13px; line-height: 1.8; color: var(--muted); }
-    .price-note-text strong { color: rgba(255,255,255,0.85); }
-
-    .price-footer {
-      padding: 60px 0; border-top: 1px solid rgba(255,255,255,0.06);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-
-    @media (max-width: 768px) {
-      .price-hero { padding: 120px 24px 60px; }
-      .price-h1 { font-size: 42px; }
-      .price-lead { font-size: 13px; max-width: 100%; }
-
-      .price-section { padding: 60px 0 80px; }
-
-      .mc-card { grid-template-columns: 1fr; margin-bottom: 40px; }
-      .mc-left { padding: 36px 28px; }
-      .mc-right { padding: 32px 28px; border-left: none; border-top: 1px solid rgba(199,134,154,0.12); }
-      .mc-name { font-size: 40px; }
-      .mc-price { font-size: 52px; }
-      .mc-cur { font-size: 22px; }
-
-      .cu-card { grid-template-columns: 1fr; }
-      .cu-left { padding: 36px 28px; }
-      .cu-right { padding: 32px 28px; border-left: none; border-top: 1px solid rgba(212,184,150,0.1); }
-      .cu-name { font-size: 36px; }
-      .cu-price { font-size: 46px; }
-      .cu-cur { font-size: 20px; }
-
-      .price-note { flex-direction: column; gap: 12px; padding: 24px 20px; }
-      .price-footer { flex-direction: column; gap: 16px; text-align: center; }
-    }
-
-    /* ─── STORIES HERO BLOCK ─── */
-    .stories-block {
-      padding: 120px 0;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(180deg, transparent, rgba(255,62,127,0.03) 50%, transparent);
-    }
-    .stories-block-bg {
-      position: absolute; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 700px 500px at 80% 50%, rgba(255,62,127,0.08), transparent 60%),
-        radial-gradient(ellipse 400px 400px at 10% 30%, rgba(199,134,154,0.05), transparent 60%);
-    }
-    .stories-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
-    }
-    .stories-pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 7px 16px; border: 1px solid rgba(255,62,127,0.4); border-radius: 999px;
-      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
-      color: #ff3e7f; background: rgba(255,62,127,0.06); margin-bottom: 24px;
-    }
-    .stories-pill::before {
-      content: ''; width: 5px; height: 5px; border-radius: 50%;
-      background: #ff3e7f; animation: pulse 2s ease-in-out infinite;
-    }
-    .stories-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(38px, 4vw, 60px); font-weight: 300; line-height: 1.02;
-      letter-spacing: -0.5px; margin-bottom: 4px;
-    }
-    .stories-title em { font-style: italic; color: #ff80ab; }
-    .stories-title strong {
-      font-weight: 600; display: block; font-style: normal; font-size: 1.15em;
-      background: linear-gradient(135deg, #fff 20%, #ff80ab 60%, #ff3e7f 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .stories-sub {
-      font-size: 13px; line-height: 1.9; color: var(--muted);
-      margin: 24px 0 36px; max-width: 38ch;
-      border-left: 1px solid rgba(255,62,127,0.3); padding-left: 20px;
-    }
-    .stories-cta {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 16px 36px;
-      background: linear-gradient(135deg, rgba(255,62,127,0.25), rgba(255,62,127,0.08));
-      border: 1px solid rgba(255,62,127,0.5); color: #fff;
-      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 500;
-      letter-spacing: 2px; text-transform: uppercase; text-decoration: none;
-      border-radius: 2px; transition: all 0.4s;
-    }
-    .stories-cta:hover {
-      background: linear-gradient(135deg, rgba(255,62,127,0.42), rgba(255,62,127,0.15));
-      border-color: #ff80ab;
-      box-shadow: 0 0 40px rgba(255,62,127,0.22);
-      transform: translateY(-2px);
-    }
-    .stories-right {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-      border: 1px solid rgba(255,62,127,0.12);
-    }
-    .stories-feat {
-      padding: 28px 24px; background: rgba(255,255,255,0.02);
-      transition: background 0.3s; position: relative;
-    }
-    .stories-feat:hover { background: rgba(255,62,127,0.05); }
-    .stories-feat::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, #ff3e7f, transparent);
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .stories-feat:hover::before { opacity: 1; }
-    .stories-feat-icon {
-      font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic;
-      color: #ff3e7f; margin-bottom: 12px; display: block;
-    }
-    .stories-feat-title { font-size: 12px; font-weight: 600; margin-bottom: 6px; color: rgba(255,255,255,0.9); }
-    .stories-feat-text { font-size: 11px; color: var(--muted); line-height: 1.6; }
-
-    /* Compact focus section */
-    .focus-compact {
-      padding: 72px 0 100px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-    .focus-compact-inner {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
-    }
-    .focus-compact-label {
-      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--rose); margin-bottom: 16px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .focus-compact-label::after { content: ''; width: 32px; height: 1px; background: var(--rose); }
-    .focus-compact-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(28px, 3vw, 40px); font-weight: 300; line-height: 1.1;
-      margin-bottom: 14px;
-    }
-    .focus-compact-title em { font-style: italic; color: var(--rose-2); }
-    .focus-compact-sub {
-      font-size: 13px; color: var(--muted); line-height: 1.8; margin-bottom: 28px;
-    }
-
-    @media (max-width: 768px) {
-      .stories-grid { grid-template-columns: 1fr; gap: 48px; }
-      .stories-sub { max-width: 100%; }
-      .focus-compact-inner { grid-template-columns: 1fr; gap: 40px; }
-      .stories-block { padding: 72px 0; }
-      .focus-compact { padding: 56px 0 80px; }
-    }
-
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>여기 아무것도 없어</title>
+<meta name="description" content="여기 아무것도 없어. 진짜야.">
+<meta name="theme-color" content="#1a1215">
+
+<!-- ПРЕВЬЮ ДЛЯ ССЫЛОК (Telegram, Instagram, WhatsApp, KakaoTalk) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://miri.watchmecreative.space/">
+<meta property="og:title" content="Did you miss me?">
+<meta property="og:description" content="…">
+<meta property="og:image" content="https://miri.watchmecreative.space/preview.jpg">
+<meta property="og:image:secure_url" content="https://miri.watchmecreative.space/preview.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Did you miss me?">
+<meta name="twitter:description" content="…">
+<meta name="twitter:image" content="https://miri.watchmecreative.space/preview.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg1:#24171b;
+    --bg2:#140d10;
+    --ink:#f4e9e4;
+    --muted:#c7b2ab;
+    --pink:#f496b8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden}
+  body{
+    background:radial-gradient(120% 90% at 50% 40%, var(--bg1), var(--bg2));
+    color:var(--ink);
+    font-family:"Gowun Batang",serif;
+    -webkit-font-smoothing:antialiased;
+    user-select:none;
+  }
+
+  /* тёплые огоньки */
+  .bokeh{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+  .bokeh span{
+    position:absolute;border-radius:50%;filter:blur(10px);opacity:0;
+    animation:float linear infinite;
+  }
+  @keyframes float{
+    0%{transform:translateY(0) scale(.9);opacity:0}
+    15%,85%{opacity:var(--o)}
+    100%{transform:translateY(-60px) scale(1.05);opacity:0}
+  }
+
+  main{
+    position:relative;height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:0 16px;text-align:center;
+  }
+  .line{
+    opacity:0;transform:translateY(8px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  .line.on{opacity:1;transform:translateY(0)}
+  .l1{font-size:clamp(1.2rem,3vw,1.8rem);letter-spacing:.18em}
+  .l2{margin-top:1rem;font-size:clamp(.85rem,1.8vw,1rem);letter-spacing:.35em;color:var(--muted)}
+  .l3{margin-top:.9rem;font-size:1rem;letter-spacing:.3em;color:var(--pink)}
+
+  /* ===== кошка, которую рисуют ===== */
+  .cat{
+    height:clamp(190px,40vh,360px);
+    margin-top:1.6rem;
+    overflow:visible;
+    transition:opacity .8s ease;
+  }
+  .cat.hide{opacity:0}
+  .cat.float{animation:floaty 3.2s ease-in-out infinite}
+  @keyframes floaty{
+    0%,100%{transform:translateY(0) rotate(0)}
+    50%{transform:translateY(-5px) rotate(-1deg)}
+  }
+  .cat mask path{
+    fill:none;stroke:#fff;stroke-width:26;
+    stroke-linecap:round;stroke-linejoin:round;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cat.float,.bokeh span{animation:none}
+  }
+</style>
+</head>
 <body>
+  <div class="bokeh" id="bokeh"></div>
 
-  <!-- ─── NAV ─── -->
-  <nav>
-    <div class="nav-logo">Daring<span> · SMM</span></div>
-    <div class="nav-links">
-      <a onclick="showPage('landing')" class="active" id="nav-landing">Главная</a>
-      <a href="https://daring-smm.ru/stories-generator/" target="_blank" id="nav-stories">Me•code Stories</a>
-      <a onclick="showPage('focus')" id="nav-focus">Фокус-группа</a>
-      <a onclick="showPage('price')" id="nav-price">Прайс</a>
-      <a href="https://instagram.com/daring.smm" target="_blank">Instagram ↗</a>
-    </div>
-  </nav>
+  <main>
+    <p class="line l1" id="l1">여기 아무것도 없어.</p>
+    <p class="line l2" id="l2">진짜야.</p>
+    <p class="line l3" id="l3">ㅋㅋ</p>
 
-  <!-- ═══════════════════════════════════════ -->
-  <!-- PAGE 1: LANDING                         -->
-  <!-- ═══════════════════════════════════════ -->
-  <div class="page active" id="page-landing">
+    <svg class="cat hide" id="cat" viewBox="0 0 1105 1201" aria-hidden="true">
+      <mask id="pen" maskUnits="userSpaceOnUse" x="0" y="0" width="1105" height="1201">
+        <path d="M677.0 160.0 L679.0 152.0 L699.0 112.0 L702.0 109.0 L704.0 103.0 L707.0 100.0 L707.0 98.0 L713.0 90.0 L713.0 88.0 L718.0 82.0 L718.0 80.0 L727.0 68.0 L730.0 62.0 L743.0 45.0 L757.0 30.0 L767.0 22.0 L775.0 18.0 L780.0 17.0 L789.0 18.0 L796.0 23.0 L803.0 34.0 L810.0 51.0 L812.0 61.0 L814.0 65.0 L826.0 128.0 L831.0 178.0 L832.0 179.0 L832.0 188.0 L833.0 189.0 L833.0 203.0" data-len="405.3"/>
+        <path d="M832.0 204.0 L826.0 202.0 L812.0 191.0 L795.0 182.0 L764.0 170.0 L756.0 162.0 L753.0 150.0 L754.0 149.0 L754.0 140.0 L755.0 139.0 L755.0 111.0 L751.0 99.0 L744.0 93.0 L739.0 93.0 L735.0 95.0 L729.0 101.0 L710.0 137.0 L704.0 145.0 L694.0 155.0 L688.0 159.0 L678.0 161.0" data-len="274.9"/>
+        <path d="M677.0 162.0 L672.0 165.0 L664.0 167.0 L645.0 175.0 L619.0 188.0 L597.0 201.0 L581.0 208.0 L574.0 208.0 L568.0 206.0 L554.0 198.0 L552.0 198.0 L529.0 187.0 L484.0 171.0 L465.0 166.0 L449.0 164.0 L448.0 163.0 L433.0 162.0 L432.0 163.0 L420.0 164.0 L409.0 169.0 L401.0 179.0 L400.0 193.0 L405.0 214.0 L419.0 254.0 L437.0 292.0 L450.0 314.0 L460.0 329.0 L478.0 352.0 L483.0 355.0" data-len="534.3"/>
+        <path d="M484.0 356.0 L484.0 361.0" data-len="5.0"/>
+        <path d="M483.0 362.0 L477.0 372.0 L472.0 386.0 L471.0 397.0 L470.0 398.0 L471.0 414.0 L476.0 420.0 L479.0 421.0 L484.0 420.0 L489.0 416.0 L493.0 409.0 L500.0 404.0" data-len="99.1"/>
+        <path d="M500.0 404.0 L501.0 387.0 L500.0 386.0 L499.0 376.0 L485.0 362.0" data-len="49.6"/>
+        <path d="M485.0 355.0 L488.0 352.0 L502.0 325.0 L508.0 304.0 L508.0 293.0 L503.0 275.0 L498.0 265.0 L478.0 240.0 L470.0 228.0 L469.0 217.0 L471.0 213.0 L476.0 208.0 L482.0 205.0 L486.0 204.0 L505.0 204.0 L531.0 212.0 L574.0 232.0" data-len="286.8"/>
+        <path d="M587.0 388.0 L597.0 390.0 L609.0 389.0" data-len="23.2"/>
+        <path d="M610.0 389.0 L621.0 378.0 L631.0 371.0 L639.0 367.0 L649.0 364.0 L662.0 364.0 L663.0 365.0 L676.0 366.0 L679.0 368.0 L684.0 369.0 L694.0 375.0" data-len="98.9"/>
+        <path d="M739.0 387.0 L750.0 387.0" data-len="11.0"/>
+        <path d="M751.0 387.0 L760.0 378.0" data-len="13.3"/>
+        <path d="M751.0 388.0 L755.0 394.0 L755.0 400.0 L757.0 403.0 L758.0 409.0" data-len="23.9"/>
+        <path d="M758.0 410.0 L755.0 417.0 L747.0 425.0 L740.0 427.0 L730.0 426.0 L729.0 425.0" data-len="39.2"/>
+        <path d="M759.0 410.0 L770.0 413.0 L777.0 412.0 L781.0 410.0 L786.0 405.0 L788.0 400.0" data-len="37.4"/>
+        <path d="M827.0 378.0 L853.0 370.0 L875.0 368.0" data-len="52.1"/>
+        <path d="M876.0 369.0 L875.0 375.0 L857.0 400.0 L815.0 448.0 L806.0 462.0 L800.0 476.0" data-len="138.5"/>
+        <path d="M799.0 476.0 L784.0 471.0 L768.0 468.0 L747.0 467.0 L746.0 468.0 L726.0 469.0 L709.0 473.0 L689.0 480.0 L642.0 504.0" data-len="176.1"/>
+        <path d="M641.0 503.0 L640.0 502.0 L635.0 502.0 L615.0 506.0 L587.0 506.0 L584.0 504.0" data-len="59.9"/>
+        <path d="M584.0 504.0 L586.0 498.0 L610.0 474.0 L643.0 450.0 L664.0 439.0" data-len="109.3"/>
+        <path d="M664.0 424.0 L655.0 427.0 L643.0 429.0 L622.0 436.0 L591.0 449.0 L552.0 471.0 L536.0 482.0 L531.0 488.0" data-len="160.1"/>
+        <path d="M530.0 489.0 L525.0 489.0" data-len="5.0"/>
+        <path d="M524.0 489.0 L505.0 473.0 L497.0 459.0 L496.0 455.0 L496.0 437.0 L502.0 413.0 L502.0 406.0 L500.0 404.0" data-len="101.7"/>
+        <path d="M579.0 412.0 L590.0 411.0 L601.0 406.0 L607.0 401.0 L610.0 390.0" data-len="44.8"/>
+        <path d="M584.0 504.0 L583.0 505.0 L578.0 505.0" data-len="6.4"/>
+        <path d="M577.0 505.0 L572.0 503.0 L547.0 498.0 L532.0 492.0 L531.0 490.0" data-len="52.8"/>
+        <path d="M524.0 490.0 L484.0 529.0 L465.0 554.0" data-len="89.6"/>
+        <path d="M541.0 579.0 L548.0 556.0 L560.0 533.0 L569.0 519.0 L575.0 512.0 L577.0 506.0" data-len="87.9"/>
+        <path d="M642.0 506.0 L643.0 508.0 L632.0 519.0 L625.0 528.0 L588.0 587.0 L571.0 607.0 L546.0 629.0 L484.0 671.0 L446.0 702.0 L420.0 728.0 L400.0 752.0 L381.0 779.0 L367.0 803.0 L356.0 826.0 L345.0 857.0 L337.0 892.0 L336.0 905.0 L334.0 913.0 L334.0 921.0 L333.0 922.0 L332.0 958.0 L333.0 959.0 L333.0 973.0 L334.0 974.0 L336.0 999.0 L340.0 1018.0 L348.0 1040.0 L351.0 1045.0" data-len="693.7"/>
+        <path d="M351.0 1046.0 L348.0 1051.0 L335.0 1060.0 L326.0 1064.0 L312.0 1068.0 L293.0 1069.0 L281.0 1066.0 L272.0 1062.0 L255.0 1046.0 L246.0 1031.0 L239.0 1009.0 L237.0 999.0 L237.0 992.0 L236.0 991.0 L236.0 983.0 L235.0 982.0 L235.0 962.0 L236.0 961.0 L237.0 946.0 L238.0 945.0 L239.0 934.0 L247.0 905.0 L257.0 881.0 L268.0 859.0 L307.0 793.0 L330.0 749.0 L343.0 718.0 L351.0 694.0 L357.0 671.0 L359.0 655.0 L360.0 654.0 L360.0 647.0 L361.0 646.0 L361.0 636.0 L362.0 635.0 L362.0 595.0 L361.0 594.0 L361.0 583.0 L360.0 582.0 L360.0 576.0 L357.0 560.0 L345.0 520.0 L333.0 494.0 L317.0 471.0 L295.0 449.0 L286.0 442.0 L266.0 429.0 L247.0 420.0 L215.0 410.0 L203.0 409.0 L202.0 408.0 L193.0 408.0 L192.0 407.0 L166.0 407.0 L165.0 408.0 L148.0 409.0 L127.0 414.0 L110.0 420.0 L89.0 430.0 L68.0 443.0 L59.0 450.0 L41.0 468.0 L35.0 476.0 L22.0 499.0 L17.0 518.0 L17.0 524.0 L16.0 525.0 L17.0 540.0 L22.0 555.0 L33.0 568.0 L42.0 573.0 L52.0 576.0 L64.0 576.0 L80.0 571.0 L115.0 549.0 L132.0 542.0 L142.0 540.0 L162.0 540.0 L176.0 543.0 L188.0 548.0 L199.0 555.0 L208.0 562.0 L223.0 578.0 L231.0 591.0 L238.0 606.0 L245.0 634.0 L245.0 666.0 L244.0 667.0 L244.0 673.0 L236.0 705.0 L228.0 726.0 L207.0 769.0 L156.0 852.0 L141.0 884.0 L131.0 917.0 L128.0 932.0 L128.0 938.0 L127.0 939.0 L126.0 956.0 L125.0 957.0 L125.0 975.0 L126.0 976.0 L127.0 993.0 L134.0 1025.0 L143.0 1048.0 L157.0 1074.0 L176.0 1100.0 L200.0 1124.0 L209.0 1131.0 L221.0 1139.0 L240.0 1149.0 L271.0 1159.0 L281.0 1161.0 L288.0 1161.0 L289.0 1162.0 L326.0 1162.0 L327.0 1161.0 L334.0 1161.0 L350.0 1158.0 L378.0 1151.0 L408.0 1148.0 L409.0 1149.0 L418.0 1149.0 L419.0 1150.0 L429.0 1151.0 L441.0 1155.0 L462.0 1165.0 L501.0 1176.0 L518.0 1177.0 L519.0 1178.0 L538.0 1178.0 L539.0 1179.0 L570.0 1178.0 L571.0 1177.0 L583.0 1176.0" data-len="2495.0"/>
+        <path d="M583.0 1176.0 L587.0 1171.0 L606.0 1166.0 L628.0 1157.0 L671.0 1135.0 L675.0 1134.0 L686.0 1126.0" data-len="124.3"/>
+        <path d="M688.0 1126.0 L691.0 1127.0 L701.0 1123.0 L717.0 1119.0 L735.0 1117.0 L736.0 1116.0 L745.0 1116.0 L746.0 1115.0 L759.0 1115.0 L760.0 1116.0 L780.0 1118.0 L799.0 1126.0 L805.0 1130.0 L815.0 1140.0 L819.0 1150.0 L819.0 1155.0 L816.0 1164.0 L807.0 1174.0 L797.0 1178.0 L789.0 1178.0 L785.0 1177.0 L783.0 1175.0" data-len="210.3"/>
+        <path d="M782.0 1175.0 L776.0 1182.0 L768.0 1184.0 L745.0 1184.0 L725.0 1180.0 L702.0 1178.0 L701.0 1177.0 L690.0 1177.0 L689.0 1176.0 L650.0 1176.0 L649.0 1177.0 L627.0 1177.0 L626.0 1178.0 L604.0 1178.0 L603.0 1179.0 L586.0 1179.0 L583.0 1176.0" data-len="209.1"/>
+        <path d="M687.0 1122.0 L688.0 1119.0 L708.0 1099.0 L728.0 1075.0 L742.0 1053.0 L750.0 1037.0 L759.0 1014.0 L759.0 1011.0 L762.0 1004.0 L765.0 989.0 L765.0 981.0 L766.0 980.0 L766.0 945.0 L765.0 944.0 L765.0 937.0 L764.0 936.0 L762.0 920.0 L756.0 902.0 L756.0 896.0" data-len="262.9"/>
+        <path d="M757.0 893.0 L749.0 880.0 L742.0 872.0" data-len="27.2"/>
+        <path d="M742.0 870.0 L743.0 867.0 L738.0 856.0 L728.0 839.0 L715.0 821.0 L693.0 800.0 L674.0 790.0 L670.0 789.0 L653.0 789.0 L646.0 791.0 L637.0 796.0 L632.0 801.0 L628.0 808.0 L628.0 814.0 L627.0 815.0 L628.0 816.0 L628.0 822.0 L630.0 826.0 L640.0 837.0 L649.0 842.0 L652.0 847.0" data-len="223.0"/>
+        <path d="M651.0 848.0 L647.0 850.0 L625.0 851.0 L609.0 854.0 L580.0 863.0 L540.0 883.0 L524.0 894.0 L504.0 911.0" data-len="173.1"/>
+        <path d="M653.0 848.0 L667.0 849.0 L673.0 851.0 L679.0 851.0 L694.0 854.0 L717.0 862.0 L735.0 872.0 L738.0 873.0 L740.0 872.0" data-len="97.8"/>
+        <path d="M740.0 871.0 L739.0 870.0 L740.0 869.0 L741.0 870.0" data-len="4.2"/>
+        <path d="M760.0 894.0 L762.0 893.0 L768.0 899.0 L778.0 913.0 L787.0 932.0 L793.0 955.0 L793.0 984.0 L792.0 985.0 L792.0 990.0 L783.0 1020.0 L774.0 1038.0 L773.0 1042.0 L774.0 1046.0 L794.0 1073.0 L837.0 1138.0 L847.0 1150.0 L857.0 1159.0 L873.0 1168.0 L895.0 1174.0 L919.0 1174.0 L924.0 1173.0 L934.0 1170.0 L940.0 1164.0" data-len="418.3"/>
+        <path d="M940.0 1163.0 L935.0 1159.0 L933.0 1155.0 L933.0 1149.0 L937.0 1145.0 L941.0 1147.0 L943.0 1153.0 L943.0 1161.0 L941.0 1163.0" data-len="46.2"/>
+        <path d="M941.0 1164.0 L943.0 1166.0 L955.0 1166.0 L963.0 1163.0 L970.0 1156.0 L973.0 1149.0 L972.0 1137.0 L969.0 1131.0 L960.0 1122.0 L950.0 1116.0 L943.0 1114.0 L924.0 1113.0 L916.0 1111.0 L906.0 1102.0 L893.0 1079.0 L881.0 1045.0 L874.0 1019.0 L873.0 1011.0 L871.0 1007.0 L869.0 994.0 L866.0 985.0 L864.0 972.0 L855.0 936.0 L851.0 911.0 L841.0 861.0 L839.0 856.0 L839.0 851.0 L837.0 846.0 L836.0 830.0" data-len="437.9"/>
+        <path d="M836.0 829.0 L834.0 827.0 L833.0 810.0 L832.0 809.0 L836.0 778.0 L844.0 751.0 L856.0 721.0 L864.0 696.0 L866.0 693.0 L866.0 690.0 L869.0 683.0 L876.0 657.0 L878.0 641.0 L879.0 640.0 L879.0 633.0 L880.0 632.0 L880.0 594.0 L879.0 593.0 L878.0 578.0 L877.0 577.0 L878.0 574.0" data-len="278.2"/>
+        <path d="M879.0 573.0 L884.0 575.0 L887.0 578.0 L894.0 589.0 L900.0 602.0 L906.0 620.0 L908.0 629.0 L908.0 636.0 L909.0 637.0 L909.0 658.0 L910.0 659.0 L908.0 687.0 L901.0 716.0 L892.0 738.0 L876.0 769.0 L852.0 805.0 L846.0 815.0 L842.0 825.0 L837.0 829.0" data-len="301.4"/>
+        <path d="M878.0 572.0 L873.0 561.0 L868.0 554.0" data-len="22.1"/>
+        <path d="M866.0 554.0 L865.0 555.0 L861.0 554.0 L853.0 548.0 L827.0 534.0 L819.0 528.0 L805.0 514.0 L800.0 505.0 L798.0 498.0 L798.0 481.0 L799.0 480.0" data-len="115.7"/>
+        <path d="M801.0 479.0 L807.0 480.0 L813.0 483.0 L828.0 493.0 L849.0 513.0 L861.0 530.0 L869.0 547.0 L870.0 551.0 L869.0 552.0" data-len="110.2"/>
+        <path d="M882.0 367.0 L919.0 368.0 L960.0 376.0 L980.0 383.0 L1000.0 393.0 L1018.0 406.0" data-len="152.2"/>
+        <path d="M1015.0 330.0 L1005.0 327.0 L993.0 326.0 L992.0 325.0 L953.0 324.0 L952.0 325.0 L942.0 325.0 L941.0 326.0 L920.0 328.0 L893.0 334.0" data-len="128.6"/>
+        <path d="M892.0 334.0 L889.0 337.0" data-len="4.2"/>
+        <path d="M888.0 337.0 L880.0 338.0 L860.0 346.0 L838.0 357.0 L825.0 366.0" data-len="75.0"/>
+        <path d="M794.0 348.0 L806.0 340.0 L813.0 333.0 L819.0 323.0 L823.0 310.0 L822.0 291.0 L819.0 281.0 L814.0 273.0 L814.0 270.0 L812.0 266.0" data-len="100.9"/>
+        <path d="M811.0 266.0 L806.0 266.0 L798.0 269.0 L789.0 275.0 L782.0 283.0" data-len="36.6"/>
+        <path d="M782.0 284.0 L785.0 287.0 L790.0 288.0" data-len="9.7"/>
+        <path d="M797.0 298.0 L796.0 303.0" data-len="5.4"/>
+        <path d="M797.0 304.0 L799.0 308.0 L800.0 315.0 L799.0 316.0 L799.0 324.0 L796.0 330.0 L792.0 334.0 L788.0 336.0 L777.0 336.0 L771.0 331.0" data-len="58.5"/>
+        <path d="M771.0 330.0 L770.0 324.0 L777.0 313.0" data-len="20.3"/>
+        <path d="M777.0 312.0 L775.0 309.0 L775.0 301.0 L778.0 285.0" data-len="29.1"/>
+        <path d="M778.0 278.0 L777.0 277.0 L777.0 272.0 L785.0 260.0 L792.0 254.0" data-len="31.2"/>
+        <path d="M812.0 265.0 L814.0 263.0 L829.0 260.0 L838.0 254.0 L843.0 243.0 L843.0 229.0 L842.0 228.0 L843.0 226.0" data-len="61.5"/>
+        <path d="M844.0 225.0 L849.0 227.0 L860.0 239.0 L872.0 255.0 L884.0 275.0 L892.0 299.0 L892.0 333.0" data-len="129.6"/>
+        <path d="M889.0 338.0 L889.0 342.0 L882.0 360.0 L882.0 365.0 L881.0 366.0" data-len="31.3"/>
+        <path d="M937.0 294.0 L951.0 281.0 L962.0 274.0 L973.0 269.0 L989.0 264.0 L1009.0 263.0 L1010.0 262.0 L1020.0 261.0 L1026.0 259.0 L1030.0 256.0" data-len="108.7"/>
+        <path d="M1030.0 255.0 L1028.0 249.0 L1015.0 226.0 L1010.0 212.0 L1009.0 200.0 L1008.0 199.0 L1009.0 188.0 L1012.0 182.0 L1016.0 178.0 L1020.0 176.0 L1028.0 176.0 L1036.0 183.0 L1039.0 190.0 L1039.0 194.0 L1041.0 197.0" data-len="129.2"/>
+        <path d="M1041.0 197.0 L1046.0 195.0 L1052.0 189.0 L1062.0 182.0 L1069.0 179.0 L1075.0 179.0 L1076.0 178.0 L1083.0 179.0 L1087.0 183.0 L1088.0 186.0 L1087.0 197.0 L1077.0 215.0 L1053.0 240.0 L1038.0 252.0 L1031.0 255.0" data-len="156.1"/>
+        <path d="M843.0 224.0 L835.0 210.0 L835.0 207.0 L833.0 205.0" data-len="23.1"/>
+        <path d="M779.0 277.0 L780.0 276.0 L781.0 277.0 L780.0 278.0" data-len="4.2"/>
+        <path d="M795.0 304.0 L789.0 304.0 L784.0 309.0 L778.0 312.0" data-len="20.3"/>
+        <path d="M770.0 331.0 L769.0 332.0 L769.0 342.0 L771.0 344.0" data-len="14.2"/>
+        <path d="M362.0 1035.0 L365.0 1034.0 L374.0 1024.0 L379.0 1016.0 L387.0 998.0 L390.0 988.0 L390.0 978.0 L389.0 975.0 L386.0 972.0 L382.0 972.0 L378.0 975.0 L374.0 979.0 L367.0 991.0 L361.0 1013.0 L361.0 1021.0 L360.0 1022.0 L360.0 1034.0 L361.0 1035.0" data-len="154.5"/>
+        <path d="M361.0 1036.0 L360.0 1037.0 L360.0 1044.0" data-len="8.4"/>
+        <path d="M360.0 1045.0 L361.0 1046.0 L361.0 1054.0 L364.0 1068.0 L374.0 1092.0" data-len="52.8"/>
+        <path d="M359.0 1045.0 L352.0 1045.0" data-len="7.0"/>
+        <path d="M782.0 1173.0 L777.0 1169.0 L777.0 1163.0 L779.0 1161.0 L782.0 1161.0 L785.0 1164.0 L785.0 1171.0 L783.0 1173.0" data-len="32.6"/>
+      </mask>
+      <image href="cat.png" width="1105" height="1201" mask="url(#pen)"/>
+    </svg>
+  </main>
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-photo">
-        <img src="photo.png" alt="Daring SMM" />
-        <div class="lightning-overlay"></div>
-      </div>
+<script>
+  const $ = id => document.getElementById(id);
+  const l1=$('l1'), l2=$('l2'), l3=$('l3'), cat=$('cat');
+  const strokes = [...cat.querySelectorAll('mask path')];
+  const wait = ms => new Promise(r => setTimeout(r, ms));
 
-      <div class="hero-content">
-        <div class="hero-eyebrow fade-in-d1">Контент, который продаёт</div>
-        <h1 class="hero-title fade-in-d2">
-          <em>Daring</em>
-          <span class="big-line">SMM</span>
-        </h1>
-        <p class="hero-sub fade-in-d3">
-          AI-системы контента для beauty-бизнеса в США.
-          Работаем с мастерами и студиями с 2020 года.
-        </p>
-        <div class="hero-divider fade-in-d3"></div>
-        <div class="hero-cta-row fade-in-d4">
-          <a href="https://daring-smm.ru/stories-generator/" target="_blank" class="btn-primary">Попробовать Me•code Stories →</a>
-          <a href="https://instagram.com/daring.smm" target="_blank" class="btn-ghost">@daring.smm</a>
-        </div>
-      </div>
+  const DRAW_MS = 3400;   // сколько длится рисование всей кошки
+  const total = strokes.reduce((s,p)=>s+ +p.dataset.len, 0);
 
-      <div class="hero-badges">
-        <div class="badge">Beauty · Nail Industry</div>
-        <div class="badge">AI Content Systems</div>
-        <div class="badge">Since 2020</div>
-      </div>
+  function resetCat(){
+    strokes.forEach(p=>{
+      const L = +p.dataset.len + 2;
+      p.style.transition='none';
+      p.style.strokeDasharray = L;
+      p.style.strokeDashoffset = L;
+    });
+    cat.getBoundingClientRect();
+  }
+  function drawCat(){
+    let t = 0;
+    strokes.forEach(p=>{
+      const dur = (+p.dataset.len / total) * DRAW_MS;
+      p.style.transition = `stroke-dashoffset ${dur}ms linear ${t}ms`;
+      p.style.strokeDashoffset = 0;
+      t += dur;
+    });
+  }
 
-      <div class="vert-text">daring.smm © 2025</div>
-    </section>
-
-    <!-- ABOUT -->
-    <section class="about">
-      <div class="about-bg"></div>
-      <div class="container">
-        <div class="about-grid">
-          <div>
-            <div class="section-label">О нас</div>
-            <h2 class="section-title">Контент — это <em>стратегия,</em> не случайность</h2>
-            <p class="section-body">
-              Мы работаем с beauty-бизнесом с 2020 года. За это время разработали систему, 
-              которая превращает контент в инструмент продаж — не «для охватов», а для реальных заявок.
-            </p>
-            <p class="section-body">
-              Продукт основан на поведенческих триггерах, 
-              сегментации аудитории и структуре, которая ведёт клиента к записи.
-            </p>
-            <div class="stat-row">
-              <div class="stat-item">
-                <div class="stat-num">5+</div>
-                <div class="stat-label">лет опыта</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-num">USA</div>
-                <div class="stat-label">рынок</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-num">AI</div>
-                <div class="stat-label">система</div>
-              </div>
-            </div>
-          </div>
-          <div class="features-grid">
-            <div class="feature-card">
-              <div class="feature-icon">✦</div>
-              <div class="feature-title">Стратегическая архитектура</div>
-              <div class="feature-text">Контент как система, а не набор случайных идей.</div>
-            </div>
-            <div class="feature-card">
-              <div class="feature-icon">◈</div>
-              <div class="feature-title">Поведенческие триггеры</div>
-              <div class="feature-text">Смыслы и формулировки, которые удерживают внимание.</div>
-            </div>
-            <div class="feature-card">
-              <div class="feature-icon">▷</div>
-              <div class="feature-title">Структура Reels, которая продаёт</div>
-              <div class="feature-text">Логика роликов, которая ведёт к записи.</div>
-            </div>
-            <div class="feature-card">
-              <div class="feature-icon">◎</div>
-              <div class="feature-title">Сегментация аудитории</div>
-              <div class="feature-text">Разные сообщения для разных типов клиентов.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- STORIES BLOCK — главный продукт -->
-    <section class="stories-block">
-      <div class="stories-block-bg"></div>
-      <div class="container">
-        <div class="stories-grid">
-          <div>
-            <div class="stories-pill">Главный продукт · Работает сейчас</div>
-            <h2 class="stories-title">
-              Me<em>•code</em>
-              <strong>Stories</strong>
-            </h2>
-            <p class="stories-sub">
-              AI-генератор сторис для beauty-мастеров. Система определяет архетип вашей аудитории, подбирает стратегию и создаёт готовый текст — продающий, прогревающий или экспертный.
-            </p>
-            <a href="https://daring-smm.ru/stories-generator/" target="_blank" class="stories-cta">
-              Попробовать бесплатно <span>→</span>
-            </a>
-          </div>
-          <div class="stories-right">
-            <div class="stories-feat">
-              <span class="stories-feat-icon">✦</span>
-              <div class="stories-feat-title">Архетип аудитории</div>
-              <div class="stories-feat-text">Система определяет глубинную потребность и страх вашего клиента</div>
-            </div>
-            <div class="stories-feat">
-              <span class="stories-feat-icon">◈</span>
-              <div class="stories-feat-title">4 типа сторис</div>
-              <div class="stories-feat-text">Продающие, прогрев, лайф и экспертные — под каждую задачу</div>
-            </div>
-            <div class="stories-feat">
-              <span class="stories-feat-icon">✿</span>
-              <div class="stories-feat-title">5 тональностей</div>
-              <div class="stories-feat-text">Мири, Ева, игривый, экспертный, дружелюбный — ваш голос</div>
-            </div>
-            <div class="stories-feat">
-              <span class="stories-feat-icon">◇</span>
-              <div class="stories-feat-title">Готово за секунды</div>
-              <div class="stories-feat-text">Опишите нишу и тему — система напишет сторис за вас</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ФОКУС-ГРУППА — компактно -->
-    <section class="focus-compact">
-      <div class="container">
-        <div class="focus-compact-inner">
-          <div>
-            <div class="focus-compact-label">Закрытый тест</div>
-            <h2 class="focus-compact-title">Фокус-<em>группа</em></h2>
-            <p class="focus-compact-sub">
-              Бесплатный тест полной AI-системы контента для nail-мастеров. 20 участников, отбор по анкете.
-            </p>
-            <a onclick="showPage('focus')" class="btn-primary" style="cursor:pointer;">Подать заявку</a>
-          </div>
-          <div>
-            <div class="services-list" style="margin-top:0;">
-              <div class="service-row" style="padding:20px 0;">
-                <span class="service-num">01</span>
-                <span class="service-name" style="font-size:20px;">Контент-стратегия</span>
-                <span class="service-desc">Персонализированная</span>
-              </div>
-              <div class="service-row" style="padding:20px 0;">
-                <span class="service-num">02</span>
-                <span class="service-name" style="font-size:20px;">Сценарии Reels</span>
-                <span class="service-desc">Сценарии для результата</span>
-              </div>
-              <div class="service-row" style="padding:20px 0;">
-                <span class="service-num">03</span>
-                <span class="service-name" style="font-size:20px;">Хуки и триггеры</span>
-                <span class="service-desc">Захват внимания</span>
-              </div>
-              <div class="service-row" style="padding:20px 0;">
-                <span class="service-num">04</span>
-                <span class="service-name" style="font-size:20px;">Позиционирование</span>
-                <span class="service-desc">Уникальный голос</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
-    <div class="container">
-      <div class="landing-footer">
-        <div class="footer-logo">Daring · SMM</div>
-        <div class="footer-copy">Digital Marketing for Beauty in USA · 2025</div>
-        <a href="https://instagram.com/daring.smm" target="_blank" class="btn-ghost" style="font-size:11px">@daring.smm</a>
-      </div>
-    </div>
-
-  </div><!-- /page-landing -->
-
-  <!-- ═══════════════════════════════════════ -->
-  <!-- PAGE 2: FOCUS GROUP                     -->
-  <!-- ═══════════════════════════════════════ -->
-  <div class="page" id="page-focus">
-
-    <!-- HERO -->
-    <section class="focus-hero">
-      <div class="focus-hero-bg"></div>
-      <div class="particles" id="particles"></div>
-
-      <div style="position:relative; z-index:2; max-width:800px;">
-        <div class="focus-label fade-in">Закрытый набор · 20 участников</div>
-        <h1 class="focus-title fade-in-d2">
-          Закрытая
-          <em>фокус-группа</em>
-        </h1>
-        <p class="focus-sub fade-in-d3">
-          AI-система генерации контента для nail-индустрии.
-          Бесплатный тест для русскоговорящих мастеров.
-        </p>
-        <div class="focus-pills fade-in-d4">
-          <span class="focus-pill">Бесплатный тест</span>
-          <span class="focus-pill">Отбор по анкете</span>
-          <span class="focus-pill">Nail-индустрия</span>
-        </div>
-        <div class="fade-in-d4">
-          <a href="#focus-form" class="btn-primary">Подать заявку</a>
-        </div>
-      </div>
-
-      <div class="scroll-hint">
-        <span>прокрутить</span>
-        <div class="scroll-line"></div>
-      </div>
-    </section>
-
-    <!-- WHY -->
-    <section class="why-section">
-      <div class="container">
-        <div style="max-width:600px;">
-          <div class="section-label">Почему это работает</div>
-          <h2 class="section-title">Контент, который <em>продаёт</em></h2>
-          <p class="section-body">
-            Система разработана на основе многолетней практики работы с beauty-бизнесом. 
-            Мы тестируем её на русскоговорящих мастерах.
-          </p>
-        </div>
-        <div class="why-grid">
-          <div class="why-card">
-            <div class="why-card-title">Стратегическая архитектура</div>
-            <div class="why-card-text">Контент как система, а не набор случайных идей.</div>
-          </div>
-          <div class="why-card">
-            <div class="why-card-title">Поведенческие триггеры</div>
-            <div class="why-card-text">Смыслы и формулировки, которые удерживают внимание.</div>
-          </div>
-          <div class="why-card">
-            <div class="why-card-title">Структура Reels, которая продаёт</div>
-            <div class="why-card-text">Логика роликов, которая ведёт к записи.</div>
-          </div>
-          <div class="why-card">
-            <div class="why-card-title">Сегментация аудитории</div>
-            <div class="why-card-text">Разные сообщения для разных типов клиентов.</div>
-          </div>
-          <div class="why-card">
-            <div class="why-card-title">Персонализация под мастера</div>
-            <div class="why-card-text">Контент отражает твой стиль и привлекает именно твоих клиентов.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FORM + INFO -->
-    <section class="included-section" id="focus-form">
-      <div class="container">
-        <div style="max-width:500px; margin-bottom:60px;">
-          <div class="section-label">Участие</div>
-          <h2 class="section-title">Что входит в <em>тест</em></h2>
-        </div>
-        <div class="included-grid">
-
-          <!-- FORM -->
-          <div class="form-panel">
-            <h3 class="form-title">Подать заявку</h3>
-            <p class="form-sub">Заполни форму — мы свяжемся с тобой, если ты подходишь под отбор.</p>
-
-            <form id="focusForm" method="POST">
-              <input class="f-field" name="name" placeholder="Имя" required />
-              <input class="f-field" name="instagram" placeholder="Instagram" required />
-              <input class="f-field" name="city" placeholder="Город" />
-              <input class="f-field" name="level" placeholder="Уровень (начинающий / mid / pro)" />
-              <input class="f-field" name="clients" placeholder="Количество клиентов в месяц" />
-              <textarea class="f-field" name="why" placeholder="Почему хотите участвовать?" rows="4"></textarea>
-              <button class="f-btn" type="submit">Получить доступ</button>
-              <div class="f-fine">Отправляя заявку, вы соглашаетесь предоставить обратную связь по результатам теста.</div>
-              <div class="f-status" id="status"></div>
-            </form>
-          </div>
-
-          <!-- INFO -->
-          <div class="info-panel">
-            <div>
-              <div class="info-section-title">Что вы получите</div>
-              <ul class="info-list">
-                <li>Контент-стратегия</li>
-                <li>Хуки</li>
-                <li>Сценарии Reels</li>
-                <li>Посты</li>
-                <li>CTA</li>
-                <li>Хештеги</li>
-                <li>Позиционирование мастера</li>
-              </ul>
-            </div>
-            <div class="info-highlight">
-              <strong>На этом этапе</strong> мы показываем продукт через результат, а не через полный интерфейс системы.
-            </div>
-            <div>
-              <div class="info-section-title">О продукте</div>
-              <p style="font-size:13px; line-height:1.8; color:var(--muted);">
-                Мы разработали систему AI-генерации контента для nail-индустрии. 
-                Продукт основан на практике работы с beauty-бизнесом с 2020 года.
-                Сейчас открываем закрытый тест для русскоговорящих мастеров, 
-                чтобы собрать результаты и отзывы перед масштабированием.
-              </p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <div class="focus-footer">
-      <div class="container">
-        <p>Daring.smm · Digital Marketing for Beauty in USA · 2025</p>
-      </div>
-    </div>
-
-  </div><!-- /page-focus -->
-
-  <!-- ═══════════════════════════════════════ -->
-  <!-- PAGE 3: PRICE                            -->
-  <!-- ═══════════════════════════════════════ -->
-  <div class="page" id="page-price">
-
-    <section class="price-hero">
-      <div class="price-hero-bg"></div>
-      <div style="position:relative;z-index:2;">
-        <div class="price-eyebrow">Прозрачное ценообразование</div>
-        <h1 class="price-h1">Инвестиции в <em>результат</em></h1>
-        <p class="price-lead">Выберите формат — подписка на готовый продукт для мастеров или кастомная разработка под онлайн-школу.</p>
-      </div>
-    </section>
-
-    <section class="price-section">
-      <div class="container">
-
-        <div class="price-cat">Me Code · Подписка для мастеров маникюра</div>
-
-        <div class="mc-card">
-          <div class="mc-left">
-            <div class="mc-pill">Для мастеров маникюра</div>
-            <div class="mc-name">Me <span>code</span></div>
-            <div class="mc-tag">AI-система генерации контента</div>
-            <div class="mc-price-row">
-              <div class="mc-price">1 290</div>
-              <div class="mc-cur">₽</div>
-            </div>
-            <div class="mc-period">в месяц · отмена в любой момент</div>
-            <a href="https://instagram.com/daring.smm" target="_blank" class="btn-primary">Подключить доступ</a>
-          </div>
-          <div class="mc-right">
-            <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Персонализированная контент-стратегия</div><div class="mc-feat-sub">Под ваш стиль, аудиторию и позиционирование</div></div></div>
-            <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Хуки, триггеры и сценарии Reels</div><div class="mc-feat-sub">Структура роликов, которая ведёт к записи</div></div></div>
-            <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Посты, CTA и хештеги</div><div class="mc-feat-sub">Готовый контент для публикаций</div></div></div>
-            <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Сегментация аудитории</div><div class="mc-feat-sub">Разные сообщения для разных типов клиентов</div></div></div>
-            <div class="mc-feat"><div class="mc-dot"></div><div><div class="mc-feat-title">Ежемесячное обновление системы</div><div class="mc-feat-sub">Продукт развивается вместе с вашим бизнесом</div></div></div>
-          </div>
-        </div>
-
-        <div class="price-cat">Me Code · Кастомизация под онлайн-школу</div>
-
-        <div class="cu-card">
-          <div class="cu-left">
-            <div class="cu-pill">◈ Онлайн-школы</div>
-            <div class="cu-name">Me code <span>Custom</span></div>
-            <div class="cu-tag">Кастомизация системы под вашу школу</div>
-            <div class="cu-from">стоимость разработки от</div>
-            <div class="cu-price-row">
-              <div class="cu-price">30 000</div>
-              <div class="cu-cur">₽</div>
-            </div>
-            <div class="cu-period">Индивидуальное КП после брифинга</div>
-            <a href="https://instagram.com/daring.smm" target="_blank" class="cu-cta">Обсудить проект</a>
-          </div>
-          <div class="cu-right">
-            <div class="cu-feat"><div class="cu-dot"></div><div><div class="cu-feat-title">Адаптация под нишу и методологию школы</div><div class="cu-feat-sub">Глубокий брифинг и анализ целевой аудитории</div></div></div>
-            <div class="cu-feat"><div class="cu-dot"></div><div><div class="cu-feat-title">Разработка уникальной AI-архитектуры</div><div class="cu-feat-sub">Контент-система под специфику онлайн-образования</div></div></div>
-            <div class="cu-feat"><div class="cu-dot"></div><div><div class="cu-feat-title">Интеграция воронки продаж курсов</div><div class="cu-feat-sub">От охвата до покупки — продающие механики</div></div></div>
-            <div class="cu-feat"><div class="cu-dot"></div><div><div class="cu-feat-title">Обучение команды и передача системы</div><div class="cu-feat-sub">Онбординг и документация по использованию</div></div></div>
-            <div class="cu-feat"><div class="cu-dot"></div><div><div class="cu-feat-title">Поддержка после запуска</div><div class="cu-feat-sub">Итерации и доработки на основе первых результатов</div></div></div>
-          </div>
-        </div>
-
-        <div class="price-note">
-          <div class="price-note-icon">✦</div>
-          <div class="price-note-text">
-            <strong>Есть вопросы?</strong> Напишите в Instagram <strong style="color:var(--rose-2);">@daring.smm</strong> — подберём подходящий формат и ответим на всё.
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <div class="container">
-      <div class="price-footer">
-        <div class="footer-logo">Daring · SMM</div>
-        <div class="footer-copy">Digital Marketing for Beauty in USA · 2025</div>
-        <a href="https://instagram.com/daring.smm" target="_blank" class="btn-ghost" style="font-size:11px">@daring.smm</a>
-      </div>
-      <div style="padding-bottom:32px; text-align:center; font-size:11px; letter-spacing:1px; color:rgba(255,255,255,0.28); border-top:1px solid rgba(255,255,255,0.04); padding-top:20px;">
-        Фоминых Ирина Насибулловна · ИНН 744801521222
-      </div>
-    </div>
-
-  </div><!-- /page-price -->
-
-  <div class="success-modal" id="successModal">
-  <div class="success-box">
-    <button class="success-close" type="button" id="successClose">&times;</button>
-    <div class="success-title">Заявка отправлена</div>
-    <div class="success-text">
-      Мы получили вашу анкету и рассмотрим её в ближайшее время.
-    </div>
-    <div class="success-note">
-      Подпишитесь на <strong style="color: var(--rose-2);">@daring.smm</strong>, 
-      чтобы не пропустить сообщение и обновления.
-    </div>
-    <div class="success-actions">
-      <a href="https://instagram.com/daring.smm" target="_blank" rel="noopener noreferrer" class="btn-primary">
-        Перейти в Instagram
-      </a>
-    </div>
-  </div>
-</div>
-
-
-  <script>
-    // ─── PAGE SWITCHING ───
-    function showPage(name) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-      document.getElementById('page-' + name).classList.add('active');
-      document.getElementById('nav-' + name).classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  async function scene(){
+    while(true){
+      resetCat();
+      cat.classList.remove('hide','float');
+      await wait(600);
+      l1.classList.add('on');
+      await wait(1300);
+      l2.classList.add('on');
+      await wait(900);
+      l3.classList.add('on');
+      await wait(400);
+      drawCat();
+      await wait(DRAW_MS + 200);
+      cat.classList.add('float');
+      await wait(3800);
+      cat.classList.add('hide');
+      l1.classList.remove('on'); l2.classList.remove('on'); l3.classList.remove('on');
+      await wait(1800);
     }
+  }
+  scene();
 
-    // ─── PARTICLES ───
-    const container = document.getElementById('particles');
-    for (let i = 0; i < 20; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      p.style.cssText = `
-        left: ${Math.random() * 100}%;
-        width: ${Math.random() * 3 + 1}px;
-        height: ${Math.random() * 3 + 1}px;
-        animation-duration: ${Math.random() * 15 + 10}s;
-        animation-delay: ${Math.random() * 10}s;
-      `;
-     
-      container.appendChild(p);
-    }
+  // Тихое уведомление: сообщает, что кто-то открыл сайт.
+  // Страну и время определяет посредник на своей стороне —
+  // со страницы не собирается и не отправляется ничего личного.
+  // Вставь сюда адрес своего Worker (получишь при деплое на Cloudflare):
+  const NOTIFY_URL = 'https://ТВОЙ-WORKER.workers.dev';
+  if (NOTIFY_URL.indexOf('ТВОЙ-WORKER') === -1) {
+    fetch(NOTIFY_URL, { method: 'POST', keepalive: true }).catch(() => {});
+  }
 
-    // ─── FORM ───
-    const form = document.getElementById('focusForm');
-    const statusEl = document.getElementById('status');
-    const successModal = document.getElementById('successModal');
-    const successClose = document.getElementById('successClose');
-    const ENDPOINT = "https://script.google.com/macros/s/AKfycbw2mPpHmScRCGsL3GNj4nBPpMr_5t4bZAi3oLdJ-v4ziJ2rp4X8luHPpnU1wGOjCa1drQ/exec";
-
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      statusEl.style.display = 'block';
-      statusEl.textContent = 'Отправляем…';
-
-      const formData = new FormData(form);
-
-      try {
-        await fetch(ENDPOINT, {
-          method: 'POST',
-          body: formData,
-          mode: 'no-cors'
-        });
-
-        statusEl.style.display = 'none';
-        successModal.classList.add('active');
-        form.reset();
-      } catch (error) {
-        statusEl.textContent = 'Ошибка отправки. Попробуйте снова.';
-      }
-    });
-
-    successClose.addEventListener('click', () => {
-      successModal.classList.remove('active');
-    });
-
-    successModal.addEventListener('click', (e) => {
-      if (e.target === successModal) {
-        successModal.classList.remove('active');
-      }
-    });
-
-  </script>
+  // тёплые огоньки
+  const bokeh = $('bokeh');
+  const colors = ['255,201,138','255,214,170','244,150,184','255,236,210'];
+  for(let i=0;i<22;i++){
+    const s = document.createElement('span');
+    const size = 6 + Math.random()*26;
+    s.style.width = s.style.height = size+'px';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = (5 + Math.random()*85)+'%';
+    s.style.background = `rgba(${colors[i%colors.length]},.9)`;
+    s.style.setProperty('--o', (.12 + Math.random()*.25).toFixed(2));
+    s.style.animationDuration = (10 + Math.random()*12)+'s';
+    s.style.animationDelay = (-Math.random()*20)+'s';
+    bokeh.appendChild(s);
+  }
+</script>
 </body>
 </html>
