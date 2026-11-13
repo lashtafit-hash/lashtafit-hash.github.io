@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090715"><title>WATCH•ME CREATIVE — Midnight Manhattan</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080714;color:#fff;font-family:Manrope,Arial,sans-serif}
+#webgl,#letters{position:fixed;inset:0;width:100%;height:100%;display:block}#webgl canvas{display:block;width:100%;height:100%}#letters{pointer-events:none;z-index:4}
+#shade{position:fixed;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(6,4,13,.16),transparent 25%,transparent 65%,rgba(7,4,14,.34))}
+#title{position:fixed;z-index:5;top:42%;transform:translateY(-50%);left:0;right:0;padding:0 14px;text-align:center;pointer-events:none;opacity:0;transition:opacity .5s}
+#title h1{font:800 clamp(44px,10.4vw,124px)/1.03 Manrope,sans-serif;letter-spacing:-.082em;color:#ffedf6;margin:0;text-shadow:0 0 35px #ff7aba55}
+#title h1 span{color:#ff9fcd}
+header{position:fixed;z-index:6;top:0;left:0;right:0;padding:calc(env(safe-area-inset-top) + 23px) clamp(20px,5vw,70px);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:11px;font-weight:800;letter-spacing:.09em;text-shadow:0 2px 16px #07040a}header b{color:#ff9fc9}header small{font:600 9px Manrope,sans-serif;letter-spacing:.18em;color:#ffe0ec}
+.actions{position:fixed;z-index:7;bottom:calc(env(safe-area-inset-bottom) + 23px);left:0;right:0;display:flex;justify-content:center;gap:10px}
+button{border-radius:40px;padding:13px 20px;border:1px solid #ffc6e16e;background:#170f21bc;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font:700 12px Manrope,sans-serif;color:white;cursor:pointer}button.primary{background:#ffe0ec;color:#241120;border-color:#ffe0ec}
+#progress{position:fixed;z-index:7;left:0;bottom:0;height:2px;width:0;background:#ffa4cc;box-shadow:0 0 20px #ff81b8}
+#fallback{position:fixed;inset:0;display:none;place-items:center;text-align:center;padding:30px;background:radial-gradient(ellipse at center,#50304d,#090715 70%);z-index:3;font:800 38px Manrope,sans-serif}
+@media(max-width:600px){header{padding-inline:15px;font-size:10px}header small{letter-spacing:.04em;font-size:8px}#title h1{font-size:clamp(37px,10.5vw,61px)}}
+</style></head><body>
+<div id="webgl"></div><canvas id="letters"></canvas><div id="shade"></div>
+<div id="fallback">WATCH•ME CREATIVE</div><div id="title"><h1>WATCH<span>•</span>ME<br>CREATIVE</h1></div>
+<header><div>WATCH<b>•</b>ME CREATIVE</div><small>NEW YORK · AFTER DARK</small></header>
+<div class="actions"><button id="replay">↻ Replay</button><button class="primary" id="enter">Enter studio ↗</button></div><div id="progress"></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
+const root=document.getElementById('webgl'),overlay=document.getElementById('letters'),ctx=overlay.getContext('2d'),title=document.getElementById('title'),progress=document.getElementById('progress');
+const MOBILE=innerWidth<700,PI=Math.PI,DURATION=7900;
+const clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,n)),smooth=t=>{t=clamp(t);return t*t*(3-2*t)},mix=(a,b,t)=>a+(b-a)*t;
+let renderer,scene,camera,road,parts=[],glowLights=[],windows=[],buildingMeshes=[],cityCloud,cloudStart,cloudEnd,cloudPosition,logoPoints=[],time0=performance.now(),frameID,width,height,pixelRatio;
+let randSeed=934211;function random(){randSeed=(randSeed*16807)%2147483647;return(randSeed-1)/2147483646}
+function fallback(e){console.error(e);document.getElementById('fallback').style.display='grid'}
+try{
+renderer=new THREE.WebGLRenderer({antialias:!MOBILE,powerPreference:'high-performance',alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,MOBILE?1.4:1.8));renderer.setSize(innerWidth,innerHeight);renderer.setClearColor(0x080714);
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.9;root.appendChild(renderer.domElement);
+scene=new THREE.Scene();scene.background=new THREE.Color(0x080714);scene.fog=new THREE.FogExp2(0x1d142b,.0036);
+camera=new THREE.PerspectiveCamera(MOBILE?67:62,innerWidth/innerHeight,.1,550);
+scene.add(new THREE.HemisphereLight(0xbab5e9,0x5a324b,2.6));
+const fill=new THREE.DirectionalLight(0xf3b2d2,1.9);fill.position.set(-30,80,25);scene.add(fill);
+const warmFill=new THREE.DirectionalLight(0xffe0bd,1.15);warmFill.position.set(33,40,-100);scene.add(warmFill);
+const facade=[0x3e3444,0x4c3b49,0x273043,0x413242,0x343246,0x4a3b46].map(c=>new THREE.MeshStandardMaterial({color:c,roughness:.72,metalness:.16,transparent:true,opacity:0}));
+const basic=(color,opacity=1)=>new THREE.MeshBasicMaterial({color,transparent:opacity<1,opacity,depthWrite:opacity===1});
+const gold=basic(0xffe4b7),pink=basic(0xffb6d6),cream=basic(0xfff2e5);
+function box(parent,w,h,d,x,y,z,mat,fade=false){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);parent.add(m);if(fade)buildingMeshes.push(m);return m}
+function yFace(x,z,w,d,h,mat){return box(scene,w,h,d,x,h/2,z,mat,true)}
+function addWindows(x,z,w,d,h,i){
+const side=Math.sign(x),faceX=x-side*(w/2+.065);
+for(let y=3;y<h-2;y+=2.45)for(let zz=z-d/2+1.0;zz<z+d/2-1;zz+=2.05){let r=random();if(r>.12)windows.push([faceX,y,zz,r])}
+for(let y=3;y<h-2;y+=2.45)for(let xx=x-w/2+1;xx<x+w/2-1;xx+=2.08){let r=random();if(r>.2)windows.push([xx,y,z+d/2+.065,r])}
+}
+function building(x,z,w,d,h,i){
+yFace(x,z,w,d,h,facade[i%facade.length]);addWindows(x,z,w,d,h,i);
+const accent=new THREE.MeshStandardMaterial({color:0x817485,roughness:.56,metalness:.23,transparent:true,opacity:0});
+if(i%3===0){box(scene,w*.82,2,d*.87,x,h+1,z,accent,true);box(scene,w*.53,2,d*.6,x,h+3,z,accent,true)}
+if(i%4===1){for(let n=0;n<4;n++)box(scene,w*.018,h,d*.018,x-w*.36+n*w*.24,h/2,z+d*.5+.02,facade[i%facade.length],true)}
+}
+// Street geometry: roadway is genuinely open, tower is visible at end of axis.
+for(let i=0;i<19;i++){
+const z=101-i*11.5;
+for(let side of [-1,1])for(let row=0;row<3;row++){
+const x=side*(17+row*10.5+random()*1.4);
+let h=(row===0?28:40)+random()*(row===0?39:55);let w=7.4+random()*2.1,d=8.5+random()*2.4;
+building(x,z,w,d,h,i+row*2+(side>0?1:0));
+}}
+const wetRoad=new THREE.MeshStandardMaterial({color:0x211c2d,roughness:.17,metalness:.72});
+road=box(scene,20,.12,410,0,-.07,-44,wetRoad);
+const walkway=new THREE.MeshStandardMaterial({color:0x39303e,metalness:.38,roughness:.48});
+for(const side of [-1,1])box(scene,4,.19,390,side*12,-.03,-43,walkway);
+const trim=basic(0xb28b9e,.75);
+for(const side of [-1,1])box(scene,.14,.045,395,side*10,.085,-43,trim);
+for(let z=-172;z<105;z+=14){box(scene,.13,.035,3.2,0,.085,z,cream)}
+// Warm actual facade windows: GPU instanced, extremely narrow rectangles, NOT colored shop squares.
+const maxWin=MOBILE?15000:32000,winCount=Math.min(maxWin,windows.length);
+const winGeom=new THREE.PlaneGeometry(.74,1.18);const winMat=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide,vertexColors:false,transparent:true,opacity:0});
+const winMesh=new THREE.InstancedMesh(winGeom,winMat,winCount);winMesh.frustumCulled=false;scene.add(winMesh);
+const dummy=new THREE.Object3D(),palette=[new THREE.Color(0xffd8ad),new THREE.Color(0xfff1d9),new THREE.Color(0xffb4cf),new THREE.Color(0xc9cbf8)],col=new THREE.Color();
+for(let i=0;i<winCount;i++){const [x,y,z,v]=windows[i];dummy.position.set(x,y,z);dummy.rotation.set(0,Math.abs(x)>11?PI/2:0,0);dummy.updateMatrix();winMesh.setMatrixAt(i,dummy.matrix);col.copy(palette[Math.min(3,Math.floor(v*4))]);winMesh.setColorAt(i,col)}
+winMesh.instanceMatrix.needsUpdate=true;if(winMesh.instanceColor)winMesh.instanceColor.needsUpdate=true;
+// Four carefully shaped Empire State Building architectural tiers at the end of Fifth Avenue.
+const tower=new THREE.Group();tower.position.set(0,0,-220);scene.add(tower);
+const stone=new THREE.MeshStandardMaterial({color:0xb3a0ac,metalness:.42,roughness:.5,emissive:0x5b314b,emissiveIntensity:.48,transparent:true,opacity:0});
+const litPink=new THREE.MeshBasicMaterial({color:0xffa4d0,transparent:true,opacity:0});
+const litGold=new THREE.MeshBasicMaterial({color:0xffe3bb,transparent:true,opacity:0});
+function towerBox(w,h,d,x,y,z,mat){const m=box(tower,w,h,d,x,y,z,mat);parts.push(m);return m}
+towerBox(25,72,21,0,36,0,stone);towerBox(21,14,18,0,79,0,stone);towerBox(15,10,14,0,91,0,stone);towerBox(10,11,9,0,101.5,0,stone);towerBox(6,9,6,0,111,0,litPink);towerBox(2.2,24,2.2,0,127,0,litGold);towerBox(.75,13,.75,0,145,0,litGold);
+for(let j=0;j<7;j++){let hh=72+j*4.2,ww=Math.max(5,24-j*2.7),dd=Math.max(4,20-j*2.3);towerBox(ww,.6,dd,0,hh,0,j%2?litPink:litGold)}
+const towerLight=new THREE.PointLight(0xff9acc,400,160);towerLight.position.set(0,109,-218);scene.add(towerLight);
+const towerGold=new THREE.PointLight(0xffd19a,190,115);towerGold.position.set(0,60,-217);scene.add(towerGold);
+// Gold and pink tower windows (small slim slits, not quadrilateral billboards).
+const towerWindowCoords=[];
+for(let y=4;y<72;y+=2.2){for(let x=-11;x<=11;x+=1.65){if(random()>.16){towerWindowCoords.push([x,y,10.62]);towerWindowCoords.push([x,y,-10.62])}}for(let z=-9;z<=9;z+=1.9)if(random()>.18){towerWindowCoords.push([-12.62,y,z]);towerWindowCoords.push([12.62,y,z])}}
+for(let y=76;y<106;y+=2.5)for(let x=-7;x<=7;x+=1.8)towerWindowCoords.push([x,y,9.8]);
+// Glitter stays in the same world-space as the recognizable tower.
+const heroN=MOBILE?22000:42000,heroStart=new Float32Array(heroN*3),heroTarget=new Float32Array(heroN*3),heroPosition=new Float32Array(heroN*3),heroColor=new Float32Array(heroN*3);
+for(let i=0;i<heroN;i++){let j=i*3,a=towerWindowCoords[i%towerWindowCoords.length],angle=random()*Math.PI*2,r=12+random()*75;heroTarget[j]=a[0];heroTarget[j+1]=a[1];heroTarget[j+2]=a[2];heroStart[j]=Math.cos(angle)*r;heroStart[j+1]=random()*135-15;heroStart[j+2]=Math.sin(angle)*r;heroPosition[j]=heroStart[j];heroPosition[j+1]=heroStart[j+1];heroPosition[j+2]=heroStart[j+2];let color=palette[Math.floor(random()*palette.length)];heroColor[j]=color.r;heroColor[j+1]=color.g;heroColor[j+2]=color.b}
+const hGeo=new THREE.BufferGeometry();hGeo.setAttribute('position',new THREE.BufferAttribute(heroPosition,3));hGeo.setAttribute('color',new THREE.BufferAttribute(heroColor,3));
+const hMat=new THREE.PointsMaterial({size:MOBILE?1.1:1.4,sizeAttenuation:false,vertexColors:true,blending:THREE.AdditiveBlending,transparent:true,opacity:0,depthWrite:false});
+const heroPoints=new THREE.Points(hGeo,hMat);heroPoints.frustumCulled=false;tower.add(heroPoints);
+// City lights arrive from outside the city and settle on the facades.
+const n=MOBILE?27000:52000,orig=new Float32Array(n*3),end=new Float32Array(n*3),pos=new Float32Array(n*3),colors=new Float32Array(n*3);
+for(let i=0;i<n;i++){let j=i*3,a=windows[i%windows.length],angle=random()*PI*2,rad=70+random()*185;end[j]=a[0];end[j+1]=a[1];end[j+2]=a[2];orig[j]=Math.cos(angle)*rad;orig[j+1]=random()*170-25;orig[j+2]=-50+Math.sin(angle)*rad;pos[j]=orig[j];pos[j+1]=orig[j+1];pos[j+2]=orig[j+2];let color=palette[Math.floor(random()*palette.length)];colors[j]=color.r;colors[j+1]=color.g;colors[j+2]=color.b}
+const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(colors,3));
+const cloudMat=new THREE.PointsMaterial({size:MOBILE?.9:1.15,sizeAttenuation:false,vertexColors:true,blending:THREE.AdditiveBlending,transparent:true,opacity:.98,depthWrite:false});
+cityCloud=new THREE.Points(geo,cloudMat);cityCloud.frustumCulled=false;scene.add(cityCloud);
+// Gold/pink light streaks on asphalt with glow fading into distance.
+const laneMat=basic(0xf8a6c6,.50);
+for(let z=-195;z<99;z+=9)for(let side of [-1,1]){const line=box(scene,.12,.02,1.8,side*6,.075,z,laneMat)}
+// Sparse magical floating dust, intentionally tiny.
+const dustGeo=new THREE.BufferGeometry(),dustPos=new Float32Array((MOBILE?2000:4000)*3);
+for(let i=0;i<dustPos.length;i+=3){dustPos[i]=(random()-.5)*115;dustPos[i+1]=random()*97;dustPos[i+2]=105-random()*310}
+dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPos,3));
+const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({size:MOBILE?.7:1,sizeAttenuation:false,color:0xeab1d2,opacity:.45,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));scene.add(dust);
+function resize(){
+width=innerWidth;height=innerHeight;pixelRatio=Math.min(devicePixelRatio||1,2);renderer.setSize(width,height);camera.aspect=width/height;camera.updateProjectionMatrix();
+overlay.width=width*pixelRatio;overlay.height=height*pixelRatio;ctx.setTransform(pixelRatio,0,0,pixelRatio);
+const off=document.createElement('canvas');off.width=width;off.height=height;
+const g=off.getContext('2d',{willReadFrequently:true});g.textAlign='center';g.textBaseline='middle';g.fillStyle='#fff0f7';
+let sz=Math.min(width*.148,122);g.font='800 '+sz+'px Manrope';while(g.measureText('WATCH•ME').width>width*.92){sz--;g.font='800 '+sz+'px Manrope'}
+g.fillText('WATCH•ME',width/2,height*.43-sz*.43);g.font='800 '+sz*.96+'px Manrope';g.fillText('CREATIVE',width/2,height*.43+sz*.78);
+const data=g.getImageData(0,0,width,height).data,dests=[];
+for(let y=0;y<height;y+=2)for(let x=0;x<width;x+=2)if(data[(y*width+x)*4+3]>145)dests.push([x,y]);
+logoPoints=[];const count=Math.min(dests.length,MOBILE?12000:19000);
+const oldPos=camera.position.clone(),oldQuat=camera.quaternion.clone();
+camera.position.set(0,9,-37);camera.lookAt(0,56,-220);camera.updateMatrixWorld();
+const p=new THREE.Vector3();
+for(let i=0;i<count;i++){const j=Math.floor(i*dests.length/count),target=dests[j],k=i%heroN*3;
+p.set(heroTarget[k],heroTarget[k+1],heroTarget[k+2]-220).project(camera);
+logoPoints.push({sx:(p.x*.5+.5)*width,sy:(-p.y*.5+.5)*height,tx:target[0],ty:target[1],r:.38+random()*.5,delay:random()*.13,c:i%4})}
+camera.position.copy(oldPos);camera.quaternion.copy(oldQuat);camera.updateMatrixWorld();
+}
+function draw(now){
+const t=clamp((now-time0)/DURATION);
+const formation=smooth(t/.24),fly=smooth((t-.23)/.38),ignite=smooth((t-.59)/.17),morph=smooth((t-.80)/.18);
+for(let i=0;i<pos.length;i++)pos[i]=mix(orig[i],end[i],formation);
+geo.attributes.position.needsUpdate=true;
+for(let i=0;i<heroPosition.length;i++)heroPosition[i]=mix(heroStart[i],heroTarget[i],ignite);
+hGeo.attributes.position.needsUpdate=true;
+const cityLevel=smooth((t-.10)/.15)*(1-morph);
+facade.forEach(m=>m.opacity=cityLevel);
+buildingMeshes.forEach(m=>{if(!facade.includes(m.material))m.material.opacity=cityLevel});
+winMat.opacity=smooth((t-.12)/.17)*(1-morph);
+cloudMat.opacity=1-morph;
+stone.opacity=ignite*(1-morph);litPink.opacity=ignite*(1-morph);litGold.opacity=ignite*(1-morph);hMat.opacity=ignite*(1-morph);
+towerLight.intensity=340+220*ignite;towerGold.intensity=140+190*ignite;
+if(t<.23){camera.position.set(0,44,140);camera.lookAt(0,34,-220)}
+else {camera.position.set(Math.sin(fly*PI)*1.0,44-35*fly,140-177*fly);camera.lookAt(0,34+22*fly,-220)}
+renderer.render(scene,camera);
+ctx.clearRect(0,0,width,height);
+if(t>.77){
+const p=smooth((t-.78)/.2);
+ctx.globalCompositeOperation='lighter';
+for(let i=0;i<logoPoints.length;i++){const d=logoPoints[i],a=smooth((p-d.delay)/(1-d.delay)),x=mix(d.sx,d.tx,a),y=mix(d.sy,d.ty,a);
+ctx.globalAlpha=a;ctx.fillStyle=d.c===0?'#ffd5e8':d.c===1?'#ffe5be':d.c===2?'#fef4ef':'#d8c5ff';ctx.beginPath();ctx.arc(x,y,d.r,0,PI*2);ctx.fill()}
+ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+}
+if(t>.96)title.style.opacity=String(smooth((t-.96)/.04)*.35);
+progress.style.width=t*100+'%';
+if(t<1)frameID=requestAnimationFrame(draw);
+}
+function replay(){cancelAnimationFrame(frameID);time0=performance.now();title.style.opacity='0';frameID=requestAnimationFrame(draw)}
+document.getElementById('replay').addEventListener('click',replay);
+document.getElementById('enter').addEventListener('click',()=>location.href='./index.html#services');
+window.addEventListener('resize',resize,{passive:true});
+document.fonts.ready.then(()=>{resize();frameID=requestAnimationFrame(draw)});
+}catch(err){fallback(err)}
+</script></body></html>
