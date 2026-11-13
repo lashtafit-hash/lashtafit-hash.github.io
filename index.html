@@ -16,7 +16,23 @@ header{position:absolute;top:0;left:0;right:0;z-index:5;padding:25px clamp(22px,
 .services{padding:90px clamp(24px,7vw,110px) 120px;background:#f3e9e2;color:#34262e}.services .mini{color:#9a5479}.services h2{max-width:700px}.service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:40px}.service{border:1px solid #cbb7be;padding:30px;min-height:210px;display:flex;flex-direction:column;justify-content:space-between}.service b{font:800 23px Manrope,sans-serif;letter-spacing:-.045em}.service p{color:#6d5863;line-height:1.5;font-size:14px}footer{padding:35px clamp(24px,7vw,110px);display:flex;justify-content:space-between;gap:20px;font-size:12px;letter-spacing:.1em;color:#bba8b6}
 @media(max-width:750px){header{padding:22px}.nav{font-size:10px}.hero h1{font-size:clamp(46px,12vw,80px)}.eyebrow{font-size:9px;letter-spacing:.3em}.story{grid-template-columns:1fr;padding:75px 24px}.story-art{min-height:440px;order:2}.story-copy{order:1}.service-grid{grid-template-columns:1fr}.service{min-height:150px}.services{padding:75px 24px}footer{flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.scroll{animation:none}html{scroll-behavior:auto}}
-</style></head><body>
+</style><style>
+#intro3d{position:fixed;inset:0;z-index:50;background:#06040d;overflow:hidden}
+#intro3d canvas{display:block;width:100%;height:100%}
+#intro3d .intro-ui{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 22px 11vh;text-align:center;color:#fff}
+#intro3d .intro-brand{font:800 clamp(32px,8vw,100px)/1.05 Manrope,sans-serif;letter-spacing:-.07em;text-shadow:0 4px 32px #000;opacity:0;transform:translateY(20px);transition:opacity 1.3s,transform 1.3s}
+#intro3d .intro-brand.show{opacity:1;transform:none}
+#intro3d .intro-brand span{color:#ff8fc4}
+#intro3d .intro-caption{margin-top:12px;font:500 12px DM Sans,sans-serif;letter-spacing:.24em;text-transform:uppercase;opacity:0;transition:opacity 1s}
+#intro3d .intro-caption.show{opacity:1}
+#intro3d .intro-skip{position:absolute;right:20px;top:22px;pointer-events:auto;background:#17101ca8;border:1px solid #ffffff55;color:#fff;border-radius:30px;padding:12px 20px;font:600 12px DM Sans,sans-serif;cursor:pointer}
+#intro3d .intro-progress{position:absolute;bottom:0;left:0;height:2px;background:#ff8fc4;width:0;transition:width .2s}
+#intro3d .intro-photo{position:absolute;inset:0;opacity:0;transition:opacity 1.3s;background:linear-gradient(0deg,#100711b0,transparent 55%),url('founders.png') center 42%/cover no-repeat}
+#intro3d .intro-photo.show{opacity:1}
+#intro3d .intro-photo.no-photo{background:linear-gradient(0deg,#100711d9,#28142360),radial-gradient(ellipse at 50% 50%,#78425d,#150d1d 70%)}
+#intro3d .intro-photo.no-photo:after{content:'NEW YORK • AFTER DARK';position:absolute;top:44%;left:0;right:0;text-align:center;letter-spacing:.3em;font-size:12px;color:#fbd3e5}
+@media(prefers-reduced-motion:reduce){#intro3d{display:none}}
+</style></head><body><div id="intro3d" aria-label="Animated flight through a particle New York skyline"><div class="intro-photo" id="intro-photo"></div><div class="intro-ui"><div class="intro-brand" id="intro-brand">WATCH<span>•</span>ME<br>CREATIVE</div><div class="intro-caption" id="intro-caption">Ideas worth watching</div></div><button class="intro-skip" id="intro-skip">Skip intro ↗</button><div class="intro-progress" id="intro-progress"></div></div>
 <header><a class="logo" href="#top">WATCH<span>•</span>ME CREATIVE</a><a class="nav" href="#services">Explore our work ↗</a></header>
 <section class="hero" id="top"><canvas id="sky" aria-label="Animated New York skyline made of glowing particles"></canvas><div class="vignette"></div>
 <div class="hero-copy"><div class="eyebrow">New York after dark · Creative without limits</div><h1>WATCH<span>•</span>ME<br>CREATIVE</h1><p>We make ideas impossible to ignore.</p></div><div class="scroll">Scroll to discover ↓</div></section>
@@ -35,4 +51,42 @@ for(const s of stars){ctx.globalAlpha=s.alpha*(.7+.3*Math.sin(tick+s.phase));ctx
 for(const p of particles){let x=p.ox,y=p.oy;const dx=x-mouse.x,dy=y-mouse.y,dist=Math.hypot(dx,dy);if(dist<105&&dist>0){const f=(105-dist)/105;x+=dx/dist*f*26;y+=dy/dist*f*26}const twinkle=.75+.25*Math.sin(tick*2+p.phase);ctx.globalAlpha=p.alpha*twinkle;ctx.fillStyle=p.pink?'#ff75b7':p.top>.55?'#ffcfdd':'#ffd8a8';ctx.fillRect(x,y,p.r,p.r)}
 ctx.globalAlpha=1;if(!reduced)requestAnimationFrame(frame)}
 c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top});c.addEventListener('pointerleave',()=>{mouse.x=-9999;mouse.y=-9999});window.addEventListener('resize',resize,{passive:true});document.addEventListener('visibilitychange',()=>{if(document.hidden)running=false;else if(!running){running=true;requestAnimationFrame(frame)}});resize();frame()})();
+</script><script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
+const overlay=document.getElementById('intro3d'),skip=document.getElementById('intro-skip'),photo=document.getElementById('intro-photo'),brand=document.getElementById('intro-brand'),caption=document.getElementById('intro-caption'),progress=document.getElementById('intro-progress');
+if(!overlay||matchMedia('(prefers-reduced-motion: reduce)').matches){overlay?.remove()}else{
+let renderer,scene,camera,buildings=[],points=[],stars,started=performance.now(),ended=false;
+const mobile=innerWidth<700, duration=12500, count=mobile?26000:55000;
+const random=(a,b)=>a+Math.random()*(b-a);
+const close=()=>{if(ended)return;ended=true;overlay.style.transition='opacity .8s';overlay.style.opacity='0';setTimeout(()=>{overlay.remove();renderer?.dispose()},850)};
+skip.onclick=close;
+try{
+renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio, mobile?1.5:2));renderer.setSize(innerWidth,innerHeight);renderer.setClearColor(0x05040d);overlay.prepend(renderer.domElement);
+scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x10071a,.012);
+camera=new THREE.PerspectiveCamera(69,innerWidth/innerHeight,.1,450);
+const geom=new THREE.BufferGeometry(),positions=new Float32Array(count*3),targets=new Float32Array(count*3),colors=new Float32Array(count*3);
+const palette=[new THREE.Color('#ffc3d9'),new THREE.Color('#ff79b7'),new THREE.Color('#e7d4ff'),new THREE.Color('#ffd9a6'),new THREE.Color('#a8b9ff')];
+const blocks=[];const street=9;
+for(let z=-135;z<90;z+=12){for(let side of [-1,1])for(let row=0;row<3;row++){const x=side*(street+row*9+random(0,2)),w=random(5,8),d=random(7,11),h=random(16,random(35,95));blocks.push({x,z:z+random(-2,2),w,d,h})}}
+const windows=[];
+for(const b of blocks){for(let y=3;y<b.h-2;y+=2.6){for(let zz=b.z-b.d/2+1;zz<b.z+b.d/2;zz+=2.4){if(Math.random()<.66)windows.push([b.x-Math.sign(b.x)*b.w/2,y,zz])}for(let xx=b.x-b.w/2+1;xx<b.x+b.w/2;xx+=2.4){if(Math.random()<.68)windows.push([xx,y,b.z-b.d/2])}}}
+for(let i=0;i<count;i++){const k=i*3;let x,y,z;if(i<windows.length){[x,y,z]=windows[i]}else{const b=blocks[Math.floor(Math.random()*blocks.length)];x=b.x+random(-b.w/2,b.w/2);y=random(0,b.h);z=b.z+random(-b.d/2,b.d/2)}
+targets[k]=x;targets[k+1]=y;targets[k+2]=z;
+const radius=random(85,210),a=random(0,Math.PI*2);positions[k]=Math.cos(a)*radius;positions[k+1]=random(-90,140);positions[k+2]=Math.sin(a)*radius;
+const col=palette[Math.floor(Math.random()*palette.length)];colors[k]=col.r;colors[k+1]=col.g;colors[k+2]=col.b}
+geom.setAttribute('position',new THREE.BufferAttribute(positions,3));geom.setAttribute('color',new THREE.BufferAttribute(colors,3));
+const mat=new THREE.PointsMaterial({size:mobile?.34:.42,vertexColors:true,transparent:true,opacity:.96,sizeAttenuation:true,depthWrite:false,blending:THREE.AdditiveBlending});
+scene.add(new THREE.Points(geom,mat));
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshBasicMaterial({color:0x0b0712,transparent:true,opacity:.85}));ground.rotation.x=-Math.PI/2;ground.position.y=-1;scene.add(ground);
+const lightLines=[];for(let s of [-1,1]){const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(s*7,0,-160),new THREE.Vector3(s*7,0,110)]);const line=new THREE.Line(g,new THREE.LineBasicMaterial({color:0xec76a9,transparent:true,opacity:.7}));scene.add(line);lightLines.push(line)}
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const tick=()=>{if(ended)return;const t=Math.min(1,(performance.now()-started)/duration),assemble=ease(Math.min(1,t/.31));const arr=geom.attributes.position.array;for(let i=0;i<count;i++){const k=i*3;arr[k]+=(targets[k]-arr[k])*(.015+.08*assemble);arr[k+1]+=(targets[k+1]-arr[k+1])*(.015+.08*assemble);arr[k+2]+=(targets[k+2]-arr[k+2])*(.015+.08*assemble)}geom.attributes.position.needsUpdate=true;
+if(t<.32){camera.position.set(0,65,190-35*ease(t/.32));camera.lookAt(0,25,-45)}else{const f=ease(Math.min(1,(t-.32)/.48));camera.position.set(0,65-60*f,155-154*f);camera.lookAt(0,20-14*f,-70-45*f)}
+if(t>.76){photo.classList.add('show');brand.classList.add('show');caption.classList.add('show')}
+progress.style.width=(t*100)+'%';renderer.render(scene,camera);if(t>=1){setTimeout(close,1800)}else requestAnimationFrame(tick)};
+const img=new Image();img.onload=()=>{};img.onerror=()=>photo.classList.add('no-photo');img.src='founders.png';
+addEventListener('resize',()=>{if(ended)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)},{passive:true});tick();
+}catch(e){console.error('3D intro unavailable',e);close()}
+}
 </script></body></html>
