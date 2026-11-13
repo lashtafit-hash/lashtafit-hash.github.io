@@ -69,7 +69,13 @@ g.fillText('WATCH•ME',w*.5,h*.43-fs*.42);g.font='800 '+fs*.94+'px Manrope';g.f
 const data=g.getImageData(0,0,w,h).data,all=[];
 for(let y=0;y<h;y+=2)for(let x=0;x<w;x+=2)if(data[(y*w+x)*4+3]>145)all.push([x,y]);
 dots=[];const cap=Math.min(all.length,mobile?10000:17000);
-for(let i=0;i<cap;i++){let p=all[Math.floor(i*all.length/cap)];dots.push({tx:p[0],ty:p[1],radius:.38+Math.random()*.55,delay:Math.random()*.12,seed:i%heroCount})}
+const oldPos=camera.position.clone(),oldQuat=camera.quaternion.clone();
+camera.position.set(0,8,-21);camera.lookAt(0,44,-113);camera.updateMatrixWorld();
+const v=new THREE.Vector3();
+for(let i=0;i<cap;i++){let p=all[Math.floor(i*all.length/cap)],seed=i%heroCount,z=seed*3;
+v.set(heroEnd[z],heroEnd[z+1],heroEnd[z+2]-116).project(camera);
+dots.push({sx:(v.x*.5+.5)*w,sy:(-v.y*.5+.5)*h,tx:p[0],ty:p[1],radius:.38+Math.random()*.55,delay:Math.random()*.12})}
+camera.position.copy(oldPos);camera.quaternion.copy(oldQuat);camera.updateMatrixWorld();
 }
 function frame(now){
 const t=clamp((now-start)/run);
@@ -94,9 +100,7 @@ if(t>.77){
 const p=smooth((t-.79)/.18);
 ctx.globalCompositeOperation='lighter';
 for(const d of dots){
-const z=d.seed*3,world=new THREE.Vector3(heroEnd[z],heroEnd[z+1],heroEnd[z+2]-116);
-world.project(camera);
-let sx=(world.x*.5+.5)*w,sy=(-world.y*.5+.5)*h;
+const sx=d.sx,sy=d.sy;
 let a=smooth((p-d.delay)/(1-d.delay));
 ctx.globalAlpha=a;ctx.fillStyle=d.radius>.73?'#ffe3f0':'#ff9dce';
 ctx.beginPath();ctx.arc(sx+(d.tx-sx)*a,sy+(d.ty-sy)*a,d.radius,0,2*PI);ctx.fill();
