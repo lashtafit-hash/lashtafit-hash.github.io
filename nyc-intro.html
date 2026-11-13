@@ -83,7 +83,7 @@ const fit=(word,max)=>{let size=Math.min(W*.138,144);lg.font='800 '+size+'px Man
 const size=fit('WATCH•ME',W*.92);lg.textAlign='center';lg.textBaseline='middle';lg.fillStyle='#fff0f7';lg.font='800 '+size+'px Manrope,Arial,sans-serif';lg.fillText('WATCH•ME',W*.5,H*.48-size*.42);lg.font='800 '+(size*.94)+'px Manrope,Arial,sans-serif';lg.fillText('CREATIVE',W*.5,H*.48+size*.68);
 const src=sg.getImageData(0,0,W,H).data,dst=lg.getImageData(0,0,W,H).data;let city=[],brand=[];
 const step=W<600?2:3;
-for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step){const i=(y*W+x)*4;if(src[i+3]>110)city.push([x,y,src[i],src[i+1],src[i+2]]);if(dst[i+3]>110)brand.push([x,y,dst[i],dst[i+1],dst[i+2]])}
+for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step){const i=(y*W+x)*4;if(src[i+3]>110&&(src[i]+src[i+1]+src[i+2]>285))city.push([x,y,src[i],src[i+1],src[i+2]]);if(dst[i+3]>110)brand.push([x,y,dst[i],dst[i+1],dst[i+2]])}
 const total=Math.min(W<600?16500:24000,Math.max(city.length,brand.length));
 pts=[];
 for(let i=0;i<total;i++){
