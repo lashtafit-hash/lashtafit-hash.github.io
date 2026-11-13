@@ -32,6 +32,19 @@ const geom=new THREE.BufferGeometry();geom.setAttribute('position',new THREE.Buf
 
 // A landmark at the END OF THE STREET, not superimposed on the screen.
 // The avenue remains open until the viewer reaches the brightly lit tower.
+
+// Storefronts and lamps stay visibly luminous even when the building façades are dark.
+const storeColors=[0xff8fc3,0xffd4b0,0xb7caff];
+for(let z=62;z>-106;z-=13){
+ for(const side of [-1,1]){
+  const x=side*11.35;
+  const storefront=new THREE.Mesh(new THREE.BoxGeometry(.2,3.4,5.9),new THREE.MeshBasicMaterial({color:storeColors[Math.abs(Math.round(z))%3],transparent:true,opacity:.75}));
+  storefront.position.set(x,2.2,z);scene.add(storefront);
+  const accent=new THREE.Mesh(new THREE.BoxGeometry(.25,.32,6.1),new THREE.MeshBasicMaterial({color:0xffe1ce}));
+  accent.position.set(x,4.2,z);scene.add(accent);
+  const halo=new THREE.PointLight(z%2?0xff7db6:0xffd7ae,12,16);halo.position.set(x-side*1.5,3,z);scene.add(halo);
+ }
+}
 const heroTower=new THREE.Group();heroTower.position.set(0,0,-116);scene.add(heroTower);
 const stone=new THREE.MeshStandardMaterial({color:0xa3a0af,emissive:0x624459,emissiveIntensity:.32,metalness:.3,roughness:.55,transparent:true,opacity:0});
 const crown=new THREE.MeshBasicMaterial({color:0xffbddf,transparent:true,opacity:0});
