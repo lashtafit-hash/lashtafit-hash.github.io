@@ -42,8 +42,8 @@ function box(parent,w,h,d,x,y,z,mat,fade=false){const m=new THREE.Mesh(new THREE
 function yFace(x,z,w,d,h,mat){return box(scene,w,h,d,x,h/2,z,mat,true)}
 function addWindows(x,z,w,d,h,i){
 const side=Math.sign(x),faceX=x-side*(w/2+.065);
-for(let y=3;y<h-2;y+=2.45)for(let zz=z-d/2+1.0;zz<z+d/2-1;zz+=2.05){let r=random();if(r>.12)windows.push([faceX,y,zz,r])}
-for(let y=3;y<h-2;y+=2.45)for(let xx=x-w/2+1;xx<x+w/2-1;xx+=2.08){let r=random();if(r>.2)windows.push([xx,y,z+d/2+.065,r])}
+for(let y=3;y<h-2;y+=2.45)for(let zz=z-d/2+1.0;zz<z+d/2-1;zz+=2.05){let r=random();if(r>.12)windows.push([faceX,y,zz,r,1])}
+for(let y=3;y<h-2;y+=2.45)for(let xx=x-w/2+1;xx<x+w/2-1;xx+=2.08){let r=random();if(r>.2)windows.push([xx,y,z+d/2+.065,r,0])}
 }
 function building(x,z,w,d,h,i){
 yFace(x,z,w,d,h,facade[i%facade.length]);addWindows(x,z,w,d,h,i);
@@ -71,7 +71,7 @@ const maxWin=MOBILE?15000:32000,winCount=Math.min(maxWin,windows.length);
 const winGeom=new THREE.PlaneGeometry(.74,1.18);const winMat=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide,vertexColors:false,transparent:true,opacity:0});
 const winMesh=new THREE.InstancedMesh(winGeom,winMat,winCount);winMesh.frustumCulled=false;scene.add(winMesh);
 const dummy=new THREE.Object3D(),palette=[new THREE.Color(0xffd8ad),new THREE.Color(0xfff1d9),new THREE.Color(0xffb4cf),new THREE.Color(0xc9cbf8)],col=new THREE.Color();
-for(let i=0;i<winCount;i++){const [x,y,z,v]=windows[i];dummy.position.set(x,y,z);dummy.rotation.set(0,Math.abs(x)>11?PI/2:0,0);dummy.updateMatrix();winMesh.setMatrixAt(i,dummy.matrix);col.copy(palette[Math.min(3,Math.floor(v*4))]);winMesh.setColorAt(i,col)}
+for(let i=0;i<winCount;i++){const [x,y,z,v]=windows[i];dummy.position.set(x,y,z);dummy.rotation.set(0,windows[i][4]?PI/2:0,0);dummy.updateMatrix();winMesh.setMatrixAt(i,dummy.matrix);col.copy(palette[Math.min(3,Math.floor(v*4))]);winMesh.setColorAt(i,col)}
 winMesh.instanceMatrix.needsUpdate=true;if(winMesh.instanceColor)winMesh.instanceColor.needsUpdate=true;
 // Four carefully shaped Empire State Building architectural tiers at the end of Fifth Avenue.
 const tower=new THREE.Group();tower.position.set(0,0,-220);scene.add(tower);
