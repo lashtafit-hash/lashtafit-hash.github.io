@@ -11,12 +11,12 @@ button{border-radius:50px;background:rgba(17,9,29,.83);border:1px solid #d99cbb;
 <script>
 (()=>{
 const stage=document.getElementById('stage'),ctx=stage.getContext('2d',{alpha:false}),progress=document.getElementById('progress');if(!ctx)return;
-let W,H,DPR,particles=[],sky=[],started=performance.now(),raf,finished=false;const DUR=5250,PI=Math.PI;
+let W,H,DPR,particles=[],sky=[],cityPlate=null,logoPlate=null,started=performance.now(),raf,finished=false;const DUR=4000,PI=Math.PI;
 const rand=(a,b)=>a+Math.random()*(b-a),clamp=(n,a,b)=>Math.max(a,Math.min(b,n)),smooth=t=>{t=clamp(t,0,1);return t*t*(3-2*t)};
 const off=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return[c,c.getContext('2d',{willReadFrequently:true})]};
 function make(){
 W=Math.max(innerWidth,320);H=Math.max(innerHeight,440);DPR=Math.min(devicePixelRatio||1,2);stage.width=Math.round(W*DPR);stage.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);particles=[];sky=[];
-const [city,g]=off(),ground=H*.79,scale=Math.min(W/900,H/850),cx=W*.5;g.clearRect(0,0,W,H);
+const [city,g]=off(),ground=H*.79,scale=Math.min(W/850,H/850),cx=W*.5;g.clearRect(0,0,W,H);
 const skyline=[
 [-420,59,230],[-361,51,320],[-308,65,250],[-239,62,370],[-175,60,280],[-106,58,425],[-44,55,305],[20,53,355],[77,55,260],[139,62,415],[205,52,310],[264,52,345],[320,63,255],[385,52,310]];
 function building(x,y,w,h,pink=false){
@@ -41,35 +41,37 @@ g.fillStyle='#ffd4e8';g.fillRect(chrysX+22*scale,chrysY-78*scale,2*scale,30*scal
 const bridgeY=ground+4*scale;
 g.strokeStyle='#ec9cbc';g.lineWidth=Math.max(1.5,2.4*scale);g.beginPath();g.moveTo(W*.03,bridgeY+23*scale);g.quadraticCurveTo(W*.25,bridgeY-30*scale,W*.46,bridgeY+24*scale);g.quadraticCurveTo(W*.73,bridgeY-35*scale,W*.98,bridgeY+19*scale);g.stroke();
 for(let i=0;i<34;i++){let x=W*i/33;g.globalAlpha=.55;g.fillStyle='#fed7b8';g.fillRect(x,ground+23*scale,2*scale,7*scale)}g.globalAlpha=1;
-const cityImage=g.getImageData(0,0,W,H).data;const [logo,l]=off();
+cityPlate=city;const cityImage=g.getImageData(0,0,W,H).data;const [logo,l]=off();
 const width=W*.91;let font=Math.min(W*.132,115);l.font='800 '+font+'px Manrope,Arial,sans-serif';while(l.measureText('WATCH•ME').width>width&&font>16){font-=2;l.font='800 '+font+'px Manrope,Arial,sans-serif'}
 l.textAlign='center';l.textBaseline='middle';l.fillStyle='#ffe7f1';l.fillText('WATCH•ME',W*.5,H*.45);
 font=Math.min(font*.96,115);l.font='800 '+font+'px Manrope,Arial,sans-serif';l.fillText('CREATIVE',W*.5,H*.45+font*1.12);
-l.fillStyle='#f8b4d5';l.font='700 '+clamp(W*.025,9,14)+'px Manrope,Arial,sans-serif';l.fillText('IDEAS WORTH WATCHING',W*.5,H*.45+font*2.25);
-const logoImage=l.getImageData(0,0,W,H).data;
-let source=[],target=[],stride=W<550?3:4;
+// Keep the brand name alone: no secondary tagline.
+logoPlate=logo;const logoImage=l.getImageData(0,0,W,H).data;
+let source=[],target=[],stride=W<550?2:3;
 for(let y=0;y<H;y+=stride)for(let x=0;x<W;x+=stride){let i=(y*W+x)*4;if(cityImage[i+3]>90)source.push({x,y,r:cityImage[i],g:cityImage[i+1],b:cityImage[i+2]});if(logoImage[i+3]>90)target.push({x,y,r:logoImage[i],g:logoImage[i+1],b:logoImage[i+2]})}
-const n=Math.min(W<550?11000:16000,Math.max(source.length,target.length));if(!source.length||!target.length)throw Error('No sampled particles');
+const n=Math.min(W<550?15500:22000,Math.max(source.length,target.length));if(!source.length||!target.length)throw Error('No sampled particles');
 for(let i=0;i<n;i++){let a=source[i%source.length],b=target[i%target.length],angle=rand(0,PI*2),radius=rand(W*.45,W*1.7);
-particles.push({sx:W*.5+Math.cos(angle)*radius,sy:H*.49+Math.sin(angle)*radius,cx:a.x,cy:a.y,tx:b.x,ty:b.y,cr:a.r,cg:a.g,cb:a.b,tr:b.r,tg:b.g,tb:b.b,delay:rand(0,.24),size:rand(.95,1.9),phase:rand(0,PI*2)});
+particles.push({sx:W*.5+Math.cos(angle)*radius,sy:H*.49+Math.sin(angle)*radius,cx:a.x,cy:a.y,tx:b.x,ty:b.y,cr:a.r,cg:a.g,cb:a.b,tr:b.r,tg:b.g,tb:b.b,delay:rand(0,.13),size:rand(.45,.92),phase:rand(0,PI*2)});
 }
-for(let i=0;i<150;i++)sky.push({x:rand(0,W),y:rand(0,H*.7),a:rand(.1,.55),p:rand(0,PI*2)});
+for(let i=0;i<85;i++)sky.push({x:rand(0,W),y:rand(0,H*.7),a:rand(.1,.55),p:rand(0,PI*2)});
 }
 function render(now){
-let t=Math.min(1,(now-started)/DUR),assemble=smooth(t/.29),lighting=smooth((t-.25)/.16),morph=smooth((t-.55)/.30);
+let t=Math.min(1,(now-started)/DUR),assemble=smooth(t/.24),lighting=smooth((t-.17)/.12),morph=smooth((t-.43)/.36);
 let bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#050715');bg.addColorStop(.57,'#1e1630');bg.addColorStop(1,'#3b203e');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
 let glow=ctx.createRadialGradient(W*.52,H*.66,0,W*.52,H*.66,W*.7);glow.addColorStop(0,'rgba(245,101,178,.19)');glow.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
-for(const star of sky){ctx.globalAlpha=star.a*(.8+.2*Math.sin(now*.002+star.p))*(1-morph);ctx.fillStyle='#ffe2f1';ctx.fillRect(star.x,star.y,1,1)}
+for(const star of sky){ctx.globalAlpha=star.a*(.8+.2*Math.sin(now*.002+star.p))*(1-morph);ctx.fillStyle='#ffe2f1';ctx.fillRect(star.x,star.y,.7,.7)}
+if(cityPlate){ctx.globalAlpha=.62*lighting*(1-morph);ctx.drawImage(cityPlate,0,0);ctx.globalAlpha=1}
 ctx.globalCompositeOperation='lighter';
 for(const p of particles){
 const ap=smooth((assemble-p.delay)/(1-p.delay)),x=p.sx+(p.cx-p.sx)*ap,y=p.sy+(p.cy-p.sy)*ap;
 const px=x+(p.tx-x)*morph,py=y+(p.ty-y)*morph;
 ctx.globalAlpha=(.6+.4*lighting)*(Math.max(.06,ap))*(.85+.15*Math.sin(now*.004+p.phase));
 let r=Math.round(p.cr+(p.tr-p.cr)*morph),g=Math.round(p.cg+(p.tg-p.cg)*morph),b=Math.round(p.cb+(p.tb-p.cb)*morph);
-ctx.fillStyle='rgb('+r+','+g+','+b+')';ctx.fillRect(px,py,p.size+lighting*.5,p.size+lighting*.5);
+ctx.fillStyle='rgb('+r+','+g+','+b+')';ctx.beginPath();ctx.arc(px,py,p.size,0,PI*2);ctx.fill();
 }
 ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
-if(t<.56){let a=smooth((t-.29)/.17);ctx.fillStyle='rgba(248,147,193,'+(a*.15)+')';ctx.fillRect(0,H*.75,W,H*.25)}
+if(logoPlate&&t>.91){ctx.globalAlpha=.22*smooth((t-.91)/.09);ctx.drawImage(logoPlate,0,0);ctx.globalAlpha=1}
+if(t<.47){let a=smooth((t-.20)/.15);ctx.fillStyle='rgba(248,147,193,'+(a*.15)+')';ctx.fillRect(0,H*.75,W,H*.25)}
 progress.style.width=(t*100)+'%';
 if(t<1)raf=requestAnimationFrame(render);
 }
