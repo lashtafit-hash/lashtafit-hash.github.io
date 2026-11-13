@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#06050b">
+<title>WATCH•ME CREATIVE — NYC Particle Intro</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap');
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#06050b;color:#fbe8ed;font-family:Manrope,Arial,sans-serif}
+#scene{position:fixed;inset:0;width:100%;height:100%;touch-action:pan-y;display:block}
+.vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 62%,transparent 32%,rgba(4,3,11,.38) 78%,rgba(3,3,8,.72) 110%)}
+.header{position:fixed;top:0;left:0;right:0;padding:calc(env(safe-area-inset-top) + 24px) clamp(21px,5vw,65px) 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;z-index:4}.wordmark{font-weight:800;font-size:clamp(12px,1.6vw,17px);letter-spacing:.06em}.wordmark span{color:#f78db8}.tag{font-size:10px;letter-spacing:.24em;color:#dbaec7;text-transform:uppercase}
+.bottom{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 29px);left:0;right:0;z-index:5;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.phase{font-size:10px;color:#d9b4c7;letter-spacing:.27em;text-transform:uppercase;height:14px;transition:opacity .4s}
+.actions{display:flex;gap:10px}.btn{appearance:none;background:rgba(30,18,35,.57);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #dfacc077;color:#fae5ed;padding:12px 20px;border-radius:90px;font:700 12px Manrope,sans-serif;letter-spacing:.09em;cursor:pointer}.btn.primary{background:#f5d3e3;color:#211021;border-color:#f5d3e3}
+.progress{position:fixed;bottom:0;left:0;height:2px;width:0;background:#f3a5ca;box-shadow:0 0 16px #ef72ad;z-index:6}
+.flash{position:fixed;inset:0;pointer-events:none;background:#fff2f8;opacity:0;z-index:3}
+@media(max-width:500px){.tag{font-size:8px;letter-spacing:.12em}.wordmark{font-size:11px}.bottom{bottom:calc(env(safe-area-inset-bottom) + 22px)}}
+@media(prefers-reduced-motion:reduce){.phase{display:none}}
+</style></head>
+<body>
+<canvas id="scene" aria-label="Animated nighttime New York skyline lighting up and transforming into WATCH ME CREATIVE"></canvas>
+<div class="vignette"></div><div class="flash" id="flash"></div>
+<div class="header"><span class="wordmark">WATCH<span>•</span>ME CREATIVE</span><span class="tag">A CREATIVE UNIVERSE</span></div>
+<div class="bottom"><div class="phase" id="phase">From a spark, a city</div><div class="actions"><button class="btn" id="replay">↻ Replay</button><button class="btn primary" id="enter">Explore the studio ↗</button></div></div>
+<div class="progress" id="progress"></div>
+<script>
+(()=>{
+"use strict";
+const c=document.getElementById('scene'),ctx=c.getContext('2d',{alpha:false}),phase=document.getElementById('phase'),bar=document.getElementById('progress'),flash=document.getElementById('flash');
+let w,h,dpr,particles=[],buildings=[],stars=[],cityImage,logoImage,start=performance.now(),raf,mouse={x:-1e4,y:-1e4};const duration=12500;
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n)),smooth=t=>{t=clamp(t,0,1);return t*t*(3-2*t)},ease=t=>1-Math.pow(1-clamp(t,0,1),3),rand=(a,b)=>a+Math.random()*(b-a);
+function makeCanvas(){const o=document.createElement('canvas');o.width=w;o.height=h;return[o,o.getContext('2d')]}
+function fitText(g,text,max,font){let sz=font;do{g.font='800 '+sz+'px Manrope,Arial,sans-serif';if(g.measureText(text).width<=max)break;sz-=2}while(sz>14);return sz}
+function setup(){
+w=Math.max(320,innerWidth);h=Math.max(460,innerHeight);dpr=Math.min(devicePixelRatio||1,2);c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
+buildings=[];stars=[];particles=[];
+const [a,g]=makeCanvas(),base=h*.75,unit=Math.max(15,w/32),heightScale=h*.46;
+g.clearRect(0,0,w,h);
+const skylineData=[.23,.39,.30,.46,.33,.58,.42,.31,.65,.49,.41,.55,.33,.48,.62,.41,.36,.52,.69,.44,.32,.50,.38,.57,.30,.44,.62,.38,.53,.36,.42,.27];
+let widths=skylineData.map((_,i)=>unit*(i%4===0?1.22:1)),sum=widths.reduce((a,b)=>a+b,0),scale=(w+unit*2)/sum,x=-unit;
+for(let i=0;i<skylineData.length;i++){const bw=widths[i]*scale,bh=(skylineData[i]*.77+.2)*heightScale;buildings.push({x,w:bw,h:bh,base,shade:i%4});x+=bw}
+const es={x:w*.44,w:w*.12,h:h*.45,base,empire:true},chrysler={x:w*.72,w:w*.06,h:h*.38,base,chrysler:true};
+buildings.push(es,chrysler);
+for(const b of buildings){
+const top=b.base-b.h;g.fillStyle=b.empire?'#25192e':b.chrysler?'#221729':b.shade===1?'#120f1c':'#1a1423';
+g.fillRect(b.x,top,b.w,b.h);
+g.fillStyle='#21172b';if(b.empire){g.fillRect(b.x+b.w*.12,top-13,b.w*.76,13);g.fillRect(b.x+b.w*.26,top-26,b.w*.48,14);g.fillRect(b.x+b.w*.4,top-35,b.w*.20,13);g.fillRect(b.x+b.w*.475,top-91,b.w*.05,60)}
+if(b.chrysler){for(let k=0;k<5;k++){g.fillRect(b.x+b.w*(.06+k*.065),top-k*8,b.w*(.88-k*.13),8)}g.fillRect(b.x+b.w*.47,top-55,b.w*.06,25)}
+g.strokeStyle=b.empire?'#dc86b0':'#463046';g.lineWidth=.7;g.strokeRect(b.x+.5,top+.5,b.w-1,b.h-1);
+const spacing=Math.max(4,Math.min(7,w/83));for(let xx=b.x+3;xx<b.x+b.w-3;xx+=spacing){for(let yy=top+7;yy<base-3;yy+=spacing*1.38){if(Math.random()<.32)continue;g.fillStyle=Math.random()<.2?'#ef92bd':Math.random()<.6?'#ffd3a3':'#cabce8';g.globalAlpha=rand(.48,1);g.fillRect(xx,yy,Math.max(1.3,spacing*.35),Math.max(1.5,spacing*.56))}}g.globalAlpha=1;
+}
+cityImage=a;
+const [la,lg]=makeCanvas();const centerY=h*.54,maxW=w*.91;
+let big=fitText(lg,'WATCH•ME',maxW,Math.min(w*.16,126));lg.textAlign='center';lg.textBaseline='middle';lg.font='800 '+big+'px Manrope,Arial,sans-serif';lg.fillStyle='#ffe8ef';lg.fillText('WATCH•ME',w*.5,centerY-big*.40);
+const sub=fitText(lg,'CREATIVE',maxW,big*.98);lg.font='800 '+sub+'px Manrope,Arial,sans-serif';lg.fillText('CREATIVE',w*.5,centerY+big*.66);
+lg.font='600 '+clamp(w*.027,9,14)+'px Manrope,Arial,sans-serif';lg.fillStyle='#f0a8c9';lg.fillText('IDEAS WORTH WATCHING',w*.5,centerY+big*1.55);
+logoImage=la;
+let cityPixels=g.getImageData(0,0,w,h).data,logoPixels=lg.getImageData(0,0,w,h).data;
+const stride=w<500?4:5;
+let cityPoints=[],logoPoints=[];
+for(let yy=0;yy<h;yy+=stride)for(let xx=0;xx<w;xx+=stride){let k=(yy*w+xx)*4;if(cityPixels[k+3]>80)cityPoints.push([xx,yy,cityPixels[k],cityPixels[k+1],cityPixels[k+2]]);if(logoPixels[k+3]>80)logoPoints.push([xx,yy,logoPixels[k],logoPixels[k+1],logoPixels[k+2]])}
+const n=Math.min(w<500?9500:15500,Math.max(cityPoints.length,logoPoints.length));
+for(let i=0;i<n;i++){const cp=cityPoints[i%cityPoints.length],lp=logoPoints[i%logoPoints.length],ang=rand(0,Math.PI*2),r=rand(w*.25,w*1.7);
+particles.push({sx:w/2+Math.cos(ang)*r,sy:h*.43+Math.sin(ang)*r,cx:cp[0],cy:cp[1],lx:lp[0],ly:lp[1],cr:cp[2],cg:cp[3],cb:cp[4],lr:lp[2],lg:lp[3],lb:lp[4],delay:rand(0,.25),size:rand(.9,2.1),phase:rand(0,6.3)})}
+for(let i=0;i<(w<500?85:170);i++)stars.push({x:rand(0,w),y:rand(0,h*.73),r:rand(.3,1.3),alpha:rand(.08,.55),p:rand(0,6.3)});
+}
+function background(t,now){
+const gr=ctx.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#060710');gr.addColorStop(.55,'#171120');gr.addColorStop(1,'#291526');ctx.fillStyle=gr;ctx.fillRect(0,0,w,h);
+const halo=ctx.createRadialGradient(w*.5,h*.70,0,w*.5,h*.70,w*.75);halo.addColorStop(0,'rgba(219,85,146,.21)');halo.addColorStop(1,'rgba(219,85,146,0)');ctx.fillStyle=halo;ctx.fillRect(0,0,w,h);
+for(const st of stars){ctx.globalAlpha=st.alpha*(.8+.2*Math.sin(now*.0017+st.p));ctx.fillStyle='#ffcae5';ctx.fillRect(st.x,st.y,st.r,st.r)}ctx.globalAlpha=1;
+if(t>.32&&t<.76){let alpha=smooth((t-.32)/.2)*(1-smooth((t-.67)/.09));ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle='#110d18';ctx.fillRect(0,h*.755,w,h*.245);
+for(let i=0;i<105;i++){let x=((i*173.73)%w),y=h*.77+((i*41.91)%(h*.24)),len=(1-(y-h*.77)/(h*.24))*(2+(i%7)*3);ctx.fillStyle=i%3?'#f1a1bc':'#ffd7a6';ctx.globalAlpha=alpha*(.07+(i%5)*.035);ctx.fillRect(x,y,len,1)}ctx.restore()}
+}
+function render(now){
+const t=clamp((now-start)/duration,0,1);background(t,now);
+const assemble=smooth(t/.33),glow=smooth((t-.28)/.20),morph=smooth((t-.57)/.31);
+const pulse=(.75+.25*Math.sin(now*.0025));
+ctx.globalCompositeOperation='lighter';
+for(const p of particles){
+const pa=smooth((assemble-p.delay)/(.85-p.delay));
+const cx=p.sx+(p.cx-p.sx)*pa,cy=p.sy+(p.cy-p.sy)*pa;
+const x=cx+(p.lx-cx)*morph,y=cy+(p.ly-cy)*morph;
+const md=Math.hypot(x-mouse.x,y-mouse.y),rep=md<90?(90-md)/90:0;
+const px=x+(md?rep*(x-mouse.x)/md*12:0),py=y+(md?rep*(y-mouse.y)/md*12:0);
+const r=Math.round(p.cr+(p.lr-p.cr)*morph),g=Math.round(p.cg+(p.lg-p.cg)*morph),b=Math.round(p.cb+(p.lb-p.cb)*morph);
+ctx.globalAlpha=(.25+.75*pa)*(.75+.25*Math.sin(now*.003+p.phase))*(.7+.3*glow);
+ctx.fillStyle='rgb('+r+','+g+','+b+')';
+ctx.fillRect(px,py,p.size+(glow*.38),p.size+(glow*.38));
+}
+ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+if(t>.25&&t<.67){const g=ctx.createLinearGradient(0,h*.34,0,h*.78);g.addColorStop(0,'rgba(255,147,207,0)');g.addColorStop(1,'rgba(255,147,207,.09)');ctx.fillStyle=g;ctx.fillRect(0,h*.34,w,h*.44)}
+const f=clamp((t-.57)/.1,0,1);flash.style.opacity=String(Math.max(0,Math.sin(f*Math.PI))*.14);
+phase.textContent=t<.3?'From a spark, a city':t<.55?'New York is waking up':t<.81?'Every light becomes an idea':'WATCH•ME CREATIVE';
+bar.style.width=(t*100)+'%';
+if(t<1)raf=requestAnimationFrame(render);else{bar.style.width='100%';phase.textContent='WATCH•ME CREATIVE · THE FUTURE IS CREATIVE'}
+}
+function replay(){cancelAnimationFrame(raf);start=performance.now();raf=requestAnimationFrame(render)}
+document.getElementById('replay').addEventListener('click',replay);
+document.getElementById('enter').addEventListener('click',()=>location.href='./index.html#services');
+c.addEventListener('pointermove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});c.addEventListener('pointerleave',()=>{mouse.x=-1e4;mouse.y=-1e4});
+window.addEventListener('resize',()=>{cancelAnimationFrame(raf);setup();replay()},{passive:true});
+document.fonts.ready.then(()=>{setup();if(matchMedia('(prefers-reduced-motion: reduce)').matches){start=performance.now()-duration}raf=requestAnimationFrame(render)});
+})();
+</script></body></html>
