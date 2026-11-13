@@ -1,83 +1,125 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070711"><title>WATCH•ME CREATIVE — New York in Lights</title><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"><style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#070711;overflow:hidden;color:#fff;font-family:Manrope,Arial,sans-serif}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
-.top{position:fixed;top:0;left:0;right:0;padding:calc(22px + env(safe-area-inset-top)) 24px;display:flex;justify-content:space-between;align-items:center;gap:15px;font-size:12px;font-weight:800;letter-spacing:.1em;pointer-events:none;text-shadow:0 2px 12px #080411}
-.top em{font-style:normal;color:#ff93c5}.top small{color:#efc4db;font-size:9px;letter-spacing:.12em}
-.bottom{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));left:0;right:0;display:flex;align-items:center;justify-content:center;gap:10px}
-button{border-radius:50px;background:rgba(17,9,29,.83);border:1px solid #d99cbb;color:#fff;font:700 12px Manrope,sans-serif;padding:13px 22px;backdrop-filter:blur(12px);cursor:pointer}button.primary{background:#f6dbe9;color:#23111c;border-color:#f6dbe9}
-.progress{position:fixed;left:0;bottom:0;height:3px;width:0;background:#fc8cbc;box-shadow:0 0 15px #ff8abc}
-@media(max-width:500px){.top small{font-size:8px}.top{font-size:11px;padding-inline:17px}}
-</style></head><body><canvas id="stage" aria-label="Thousands of illuminated particles assemble Manhattan, then rearrange to spell WATCH ME CREATIVE"></canvas><div class="top"><span>WATCH<em>•</em>ME CREATIVE</span><small>NEW YORK · AFTER DARK</small></div><div class="bottom"><button id="replay">↻ Replay</button><button class="primary" id="enter">Enter studio ↗</button></div><div id="progress" class="progress"></div>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#090912"/>
+<title>WATCH•ME CREATIVE — New York, Reimagined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07060d;color:#fff;font-family:Manrope,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+canvas{width:100%;height:100%;position:fixed;inset:0;display:block}
+.top{position:fixed;left:0;right:0;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top) + 23px) clamp(20px,5vw,60px);font-size:11px;font-weight:800;letter-spacing:.085em;text-shadow:0 2px 12px #000}.top strong{color:#ffa7ce}.top small{font-size:9px;font-weight:600;letter-spacing:.18em;color:#ebc1d6}
+.bottom{position:fixed;z-index:4;bottom:calc(env(safe-area-inset-bottom) + 29px);left:0;right:0;display:flex;justify-content:center;gap:10px}
+button{border:1px solid #e5b2cf88;border-radius:90px;padding:13px 22px;background:#160f1fcf;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font:700 12px Manrope,Arial,sans-serif;color:#ffe9f2;cursor:pointer;letter-spacing:.03em}
+button.main{background:#f4d7e6;color:#2a1322;border-color:#f4d7e6}
+.progress{height:2px;background:#ff9fcb;box-shadow:0 0 12px #ff8abb;position:fixed;bottom:0;left:0;width:0;z-index:5}
+#status{position:fixed;z-index:4;top:calc(env(safe-area-inset-top) + 76px);left:0;right:0;text-align:center;color:#f7c3da;font:600 10px Manrope;letter-spacing:.3em;opacity:0;transition:opacity .6s}
+@media(max-width:600px){.top{font-size:10px;padding-inline:18px}.top small{font-size:8px;letter-spacing:.06em}.bottom{bottom:calc(env(safe-area-inset-bottom) + 22px)}}
+</style></head><body>
+<canvas id="art" aria-label="Luminous particles form the New York skyline before transforming into WATCH ME CREATIVE"></canvas>
+<div class="top"><span>WATCH<strong>•</strong>ME CREATIVE</span><small>MADE OF IDEAS</small></div>
+<div id="status">NEW YORK / AFTER DARK</div>
+<div class="bottom"><button id="again">↻ Replay</button><button class="main" id="go">Explore the studio ↗</button></div><div class="progress" id="bar"></div>
 <script>
 (()=>{
-const stage=document.getElementById('stage'),ctx=stage.getContext('2d',{alpha:false}),progress=document.getElementById('progress');if(!ctx)return;
-let W,H,DPR,particles=[],sky=[],cityPlate=null,logoPlate=null,started=performance.now(),raf,finished=false;const DUR=4000,PI=Math.PI;
-const rand=(a,b)=>a+Math.random()*(b-a),clamp=(n,a,b)=>Math.max(a,Math.min(b,n)),smooth=t=>{t=clamp(t,0,1);return t*t*(3-2*t)};
-const off=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return[c,c.getContext('2d',{willReadFrequently:true})]};
+'use strict';
+const cv=document.getElementById('art'),ctx=cv.getContext('2d',{alpha:false}),bar=document.getElementById('bar'),status=document.getElementById('status');
+if(!ctx)return;
+const T=6900,PI=Math.PI,two=PI*2;
+let W=0,H=0,DPR=1,start=performance.now(),frame=0,pts=[],stars=[],sceneCanvas,logoCanvas,motion={x:-1e4,y:-1e4},ready=false;
+const rnd=(a,b)=>a+Math.random()*(b-a),clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),ease=t=>{t=clamp(t);return t*t*(3-2*t)},out=t=>1-Math.pow(1-clamp(t),3);
+function temp(){const c=document.createElement('canvas');c.width=W;c.height=H;return[c,c.getContext('2d',{willReadFrequently:true})]}
+function buildCity(g){
+const sx=W/1000,sy=H/900,base=727*sy;
+const X=x=>x*sx,Y=y=>y*sy;
+function rect(x,y,w,h,color){g.fillStyle=color;g.fillRect(X(x),Y(y),X(w),Y(h))}
+function poly(points,color){g.fillStyle=color;g.beginPath();points.forEach((p,i)=>i?g.lineTo(X(p[0]),Y(p[1])):g.moveTo(X(p[0]),Y(p[1])));g.closePath();g.fill()}
+function windowField(x,y,w,h,seed,spacingX=13,spacingY=17){
+for(let ix=x+7;ix<x+w-5;ix+=spacingX)for(let iy=y+10;iy<y+h-6;iy+=spacingY){
+const n=Math.abs(Math.sin(ix*13.217+iy*17.173+seed*67.1)*31873)%1;
+if(n<.27)continue;
+let c=n>.82?'#ff9cc5':n>.64?'#ffd6a4':n>.45?'#f4daee':'#c6b9e5';
+g.globalAlpha=.47+n*.53;rect(ix,iy,Math.max(2.5,spacingX*.26),Math.max(4,spacingY*.38),c);
+}g.globalAlpha=1;
+}
+function house(x,w,top,color,i){rect(x,top,w,727-top,color);rect(x+2,top,2,727-top,'#483044');rect(x,top,w,3,'#51354c');windowField(x,top,w,727-top,i)}
+// layers: each skyline segment has actual tiered architecture rather than identical blocks
+const blocks=[
+[-24,84,477], [65,77,392], [143,48,462], [196,91,364], [295,58,418],
+[362,59,465], [426,45,373], [483,56,428], [545,61,452], [615,52,418],
+[674,56,459], [734,57,404], [795,51,469], [852,55,399], [918,86,447]];
+blocks.forEach((b,i)=>{house(b[0],b[1],b[2],i%3===0?'#151525':i%3===1?'#1b1728':'#141521',i+1);
+if(i%3===0){rect(b[0]+b[1]*.18,b[2]-17,b[1]*.65,17,'#21192d');rect(b[0]+b[1]*.47,b[2]-35,3,20,'#8e6d8f')}
+if(i%4===2){rect(b[0]+b[1]*.28,b[2]-12,b[1]*.46,12,'#292039')}
+});
+// ONE WORLD TRADE CENTER with unmistakable tapered faceted shape
+poly([[134,391],[151,341],[171,302],[202,341],[219,391],[219,727],[134,727]],'#1d2033');
+poly([[171,302],[202,341],[219,391],[194,727],[171,727]],'#273048');
+poly([[134,391],[171,302],[171,727],[151,727]],'#181a2d');
+for(let x=145;x<212;x+=9){g.globalAlpha=.57;rect(x,397,2,320,'#a9accf')}g.globalAlpha=1;
+for(let y=409;y<722;y+=13){rect(145,y,65,3,y%2?'#ebc9da':'#a3acdc')}
+rect(169,241,4,69,'#e3b7d3');rect(168,229,6,14,'#ffb3d0');
+// EMPIRE STATE BUILDING central: step-backs, crown and illuminated spire
+house(422,142,422,'#242033',15,11,16);
+rect(440,379,104,43,'#29253b');rect(456,348,73,31,'#31253f');rect(473,318,38,31,'#362845');
+rect(482,284,20,34,'#3c2c4b');rect(489,223,7,62,'#f2b0d5');
+for(let y=354;y<424;y+=12){rect(462,y,62,3,'#f2bdd7')}
+rect(488,285,9,30,'#f5a1c9');rect(492,211,2,18,'#ffe7f1');
+// CHRYSLER BUILDING ART DECO CROWN
+house(691,80,418,'#222438',26,10,17);
+for(let j=0;j<6;j++){poly([[698+j*4,418-j*15],[764-j*4,418-j*15],[758-j*6,410-j*15],[704+j*6,410-j*15]],j%2?'#a5a0c5':'#f0cade')}
+rect(729,297,4,48,'#ffcee6');rect(731,277,1.7,22,'#e4bdd7');
+// rooftop details, facade depth
+rect(321,386,5,331,'#5b3855');rect(573,433,5,288,'#52364c');rect(879,403,4,312,'#533752');
+// Brooklyn bridge foreground: suspension geometry below buildings
+g.lineCap='round';g.strokeStyle='#9d6481';g.lineWidth=Math.max(1.2,X(3));g.beginPath();g.moveTo(0,Y(785));g.bezierCurveTo(X(220),Y(691),X(290),Y(715),X(500),Y(784));g.bezierCurveTo(X(690),Y(713),X(778),Y(692),W,Y(785));g.stroke();
+g.strokeStyle='#cc819f';g.lineWidth=Math.max(1,X(2));g.beginPath();g.moveTo(0,Y(789));g.lineTo(W,Y(789));g.stroke();
+for(let j=0;j<38;j++){let x=j*27,yy=785-76*Math.sin(PI*(x%500)/500);g.strokeStyle='#a56b89';g.lineWidth=Math.max(.8,X(1));g.beginPath();g.moveTo(X(x),Y(yy));g.lineTo(X(x),Y(790));g.stroke()}
+rect(260,715,13,85,'#3a2337');rect(742,717,13,83,'#3a2337');
+}
 function make(){
-W=Math.max(innerWidth,320);H=Math.max(innerHeight,440);DPR=Math.min(devicePixelRatio||1,2);stage.width=Math.round(W*DPR);stage.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);particles=[];sky=[];
-const [city,g]=off(),ground=H*.79,scale=Math.min(W/850,H/850),cx=W*.5;g.clearRect(0,0,W,H);
-const skyline=[
-[-420,59,230],[-361,51,320],[-308,65,250],[-239,62,370],[-175,60,280],[-106,58,425],[-44,55,305],[20,53,355],[77,55,260],[139,62,415],[205,52,310],[264,52,345],[320,63,255],[385,52,310]];
-function building(x,y,w,h,pink=false){
-g.fillStyle=pink?'#242037':'#151525';g.fillRect(x,y,w,h);
-g.fillStyle='#3a2c4e';g.fillRect(x+2,y,w-4,3);
-const sx=Math.max(5,9*scale),sy=Math.max(8,12*scale);
-for(let wx=x+4*scale;wx<x+w-3*scale;wx+=sx)for(let wy=y+9*scale;wy<y+h-4*scale;wy+=sy){
-if(Math.random()<.2)continue;g.fillStyle=Math.random()<.28?'#ff99c5':Math.random()<.72?'#ffdcb2':'#e7d0ff';
-g.globalAlpha=rand(.55,1);g.fillRect(wx,wy,Math.max(1.7,2.5*scale),Math.max(3,5.5*scale));}g.globalAlpha=1;
+W=Math.max(320,innerWidth);H=Math.max(480,innerHeight);DPR=Math.min(devicePixelRatio||1,1.8);cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);
+const [scene,sg]=temp();buildCity(sg);sceneCanvas=scene;
+const [logo,lg]=temp();logoCanvas=logo;
+const fit=(word,max)=>{let size=Math.min(W*.138,144);lg.font='800 '+size+'px Manrope,Arial,sans-serif';while(lg.measureText(word).width>max&&size>20){size-=1;lg.font='800 '+size+'px Manrope,Arial,sans-serif'}return size};
+const size=fit('WATCH•ME',W*.92);lg.textAlign='center';lg.textBaseline='middle';lg.fillStyle='#fff0f7';lg.font='800 '+size+'px Manrope,Arial,sans-serif';lg.fillText('WATCH•ME',W*.5,H*.48-size*.42);lg.font='800 '+(size*.94)+'px Manrope,Arial,sans-serif';lg.fillText('CREATIVE',W*.5,H*.48+size*.68);
+const src=sg.getImageData(0,0,W,H).data,dst=lg.getImageData(0,0,W,H).data;let city=[],brand=[];
+const step=W<600?2:3;
+for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step){const i=(y*W+x)*4;if(src[i+3]>110)city.push([x,y,src[i],src[i+1],src[i+2]]);if(dst[i+3]>110)brand.push([x,y,dst[i],dst[i+1],dst[i+2]])}
+const total=Math.min(W<600?16500:24000,Math.max(city.length,brand.length));
+pts=[];
+for(let i=0;i<total;i++){
+let a=city[i%city.length],b=brand[i%brand.length],ang=rnd(0,two),rad=rnd(W*.35,W*1.65);
+pts.push({x0:W*.5+Math.cos(ang)*rad,y0:H*.5+Math.sin(ang)*rad,x1:a[0],y1:a[1],x2:b[0],y2:b[1],r1:a[2],g1:a[3],b1:a[4],r2:b[2],g2:b[3],b2:b[4],delay:rnd(0,.26),size:rnd(.42,.9),phase:rnd(0,two),speed:rnd(.85,1.15)})
 }
-for(const [xx,ww,hh] of skyline)building(cx+xx*scale,ground-hh*scale,ww*scale,hh*scale);
-const empireX=cx-75*scale, empireTop=ground-500*scale;
-building(empireX,empireTop,70*scale,500*scale,true);
-g.fillStyle='#29213b';g.fillRect(empireX+9*scale,empireTop-27*scale,52*scale,27*scale);g.fillRect(empireX+21*scale,empireTop-51*scale,28*scale,25*scale);g.fillRect(empireX+31*scale,empireTop-84*scale,8*scale,35*scale);g.fillRect(empireX+34*scale,empireTop-116*scale,2*scale,34*scale);
-g.fillStyle='#ff9ac8';g.fillRect(empireX+33.5*scale,empireTop-108*scale,3*scale,53*scale);
-const towerX=cx+196*scale,towerTop=ground-535*scale;
-building(towerX,towerTop,48*scale,535*scale,true);
-g.fillStyle='#2c2949';g.beginPath();g.moveTo(towerX-3*scale,towerTop);g.lineTo(towerX+24*scale,towerTop-66*scale);g.lineTo(towerX+51*scale,towerTop);g.fill();g.fillRect(towerX+23*scale,towerTop-119*scale,3*scale,70*scale);
-const chrysX=cx+99*scale,chrysY=ground-449*scale;building(chrysX,chrysY,45*scale,449*scale,true);
-for(let i=0;i<5;i++){g.fillStyle=i%2?'#ffc1d9':'#413550';g.fillRect(chrysX+i*5*scale,chrysY-(i+1)*10*scale,(45-i*10)*scale,10*scale)}
-g.fillStyle='#ffd4e8';g.fillRect(chrysX+22*scale,chrysY-78*scale,2*scale,30*scale);
-const bridgeY=ground+4*scale;
-g.strokeStyle='#ec9cbc';g.lineWidth=Math.max(1.5,2.4*scale);g.beginPath();g.moveTo(W*.03,bridgeY+23*scale);g.quadraticCurveTo(W*.25,bridgeY-30*scale,W*.46,bridgeY+24*scale);g.quadraticCurveTo(W*.73,bridgeY-35*scale,W*.98,bridgeY+19*scale);g.stroke();
-for(let i=0;i<34;i++){let x=W*i/33;g.globalAlpha=.55;g.fillStyle='#fed7b8';g.fillRect(x,ground+23*scale,2*scale,7*scale)}g.globalAlpha=1;
-cityPlate=city;const cityImage=g.getImageData(0,0,W,H).data;const [logo,l]=off();
-const width=W*.91;let font=Math.min(W*.132,115);l.font='800 '+font+'px Manrope,Arial,sans-serif';while(l.measureText('WATCH•ME').width>width&&font>16){font-=2;l.font='800 '+font+'px Manrope,Arial,sans-serif'}
-l.textAlign='center';l.textBaseline='middle';l.fillStyle='#ffe7f1';l.fillText('WATCH•ME',W*.5,H*.45);
-font=Math.min(font*.96,115);l.font='800 '+font+'px Manrope,Arial,sans-serif';l.fillText('CREATIVE',W*.5,H*.45+font*1.12);
-// Keep the brand name alone: no secondary tagline.
-logoPlate=logo;const logoImage=l.getImageData(0,0,W,H).data;
-let source=[],target=[],stride=W<550?2:3;
-for(let y=0;y<H;y+=stride)for(let x=0;x<W;x+=stride){let i=(y*W+x)*4;if(cityImage[i+3]>90)source.push({x,y,r:cityImage[i],g:cityImage[i+1],b:cityImage[i+2]});if(logoImage[i+3]>90)target.push({x,y,r:logoImage[i],g:logoImage[i+1],b:logoImage[i+2]})}
-const n=Math.min(W<550?15500:22000,Math.max(source.length,target.length));if(!source.length||!target.length)throw Error('No sampled particles');
-for(let i=0;i<n;i++){let a=source[i%source.length],b=target[i%target.length],angle=rand(0,PI*2),radius=rand(W*.45,W*1.7);
-particles.push({sx:W*.5+Math.cos(angle)*radius,sy:H*.49+Math.sin(angle)*radius,cx:a.x,cy:a.y,tx:b.x,ty:b.y,cr:a.r,cg:a.g,cb:a.b,tr:b.r,tg:b.g,tb:b.b,delay:rand(0,.13),size:rand(.45,.92),phase:rand(0,PI*2)});
+stars=[];for(let i=0;i<130;i++)stars.push({x:rnd(0,W),y:rnd(0,H*.78),a:rnd(.12,.65),phase:rnd(0,two)});
+ready=true;
 }
-for(let i=0;i<85;i++)sky.push({x:rand(0,W),y:rand(0,H*.7),a:rand(.1,.55),p:rand(0,PI*2)});
-}
-function render(now){
-let t=Math.min(1,(now-started)/DUR),assemble=smooth(t/.24),lighting=smooth((t-.17)/.12),morph=smooth((t-.43)/.36);
-let bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#050715');bg.addColorStop(.57,'#1e1630');bg.addColorStop(1,'#3b203e');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
-let glow=ctx.createRadialGradient(W*.52,H*.66,0,W*.52,H*.66,W*.7);glow.addColorStop(0,'rgba(245,101,178,.19)');glow.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
-for(const star of sky){ctx.globalAlpha=star.a*(.8+.2*Math.sin(now*.002+star.p))*(1-morph);ctx.fillStyle='#ffe2f1';ctx.fillRect(star.x,star.y,.7,.7)}
-if(cityPlate){ctx.globalAlpha=.62*lighting*(1-morph);ctx.drawImage(cityPlate,0,0);ctx.globalAlpha=1}
+function draw(now){
+const p=clamp((now-start)/T);
+const assemble=ease(p/.34),light=ease((p-.21)/.22),morph=ease((p-.54)/.33);
+let bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#070914');bg.addColorStop(.49,'#181122');bg.addColorStop(.80,'#362038');bg.addColorStop(1,'#0e0b15');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+const haze=ctx.createRadialGradient(W*.5,H*.68,0,W*.5,H*.68,W*.8);haze.addColorStop(0,'rgba(244,99,163,.23)');haze.addColorStop(1,'rgba(2,2,8,0)');ctx.fillStyle=haze;ctx.fillRect(0,0,W,H);
+for(const s of stars){ctx.globalAlpha=s.a*(.65+.35*Math.sin(now*.002+s.phase))*(1-morph);ctx.fillStyle='#ffc8e6';ctx.fillRect(s.x,s.y,.9,.9)}ctx.globalAlpha=1;
+if(sceneCanvas&&p>.16&&p<.87){ctx.globalAlpha=.58*light*(1-morph);ctx.drawImage(sceneCanvas,0,0);ctx.globalAlpha=1}
+if(p>.19&&p<.65){const alpha=ease((p-.19)/.24)*(1-ease((p-.52)/.15));
+const hg=ctx.createLinearGradient(0,H*.77,0,H);hg.addColorStop(0,'rgba(255,123,178,.15)');hg.addColorStop(1,'rgba(9,8,22,.95)');ctx.globalAlpha=alpha;ctx.fillStyle=hg;ctx.fillRect(0,H*.77,W,H*.23);
+for(let i=0;i<150;i++){let x=(i*171.1)%W,y=H*.81+(i*33.3)%(H*.17),v=(H-y)/(H*.2);ctx.globalAlpha=alpha*Math.max(0,v)*.3;ctx.fillStyle=i%4?'#fba4ca':'#ffd6b6';ctx.fillRect(x,y,2+(i%7)*3,.7)}ctx.globalAlpha=1}
 ctx.globalCompositeOperation='lighter';
-for(const p of particles){
-const ap=smooth((assemble-p.delay)/(1-p.delay)),x=p.sx+(p.cx-p.sx)*ap,y=p.sy+(p.cy-p.sy)*ap;
-const px=x+(p.tx-x)*morph,py=y+(p.ty-y)*morph;
-ctx.globalAlpha=(.6+.4*lighting)*(Math.max(.06,ap))*(.85+.15*Math.sin(now*.004+p.phase));
-let r=Math.round(p.cr+(p.tr-p.cr)*morph),g=Math.round(p.cg+(p.tg-p.cg)*morph),b=Math.round(p.cb+(p.tb-p.cb)*morph);
-ctx.fillStyle='rgb('+r+','+g+','+b+')';ctx.beginPath();ctx.arc(px,py,p.size,0,PI*2);ctx.fill();
+for(const pt of pts){
+const travel=ease((assemble-pt.delay)/(1-pt.delay)),x=pt.x0+(pt.x1-pt.x0)*travel,y=pt.y0+(pt.y1-pt.y0)*travel;
+const xx=x+(pt.x2-x)*morph,yy=y+(pt.y2-y)*morph;
+let rr=Math.round(pt.r1+(pt.r2-pt.r1)*morph),gg=Math.round(pt.g1+(pt.g2-pt.g1)*morph),bb=Math.round(pt.b1+(pt.b2-pt.b1)*morph);
+ctx.globalAlpha=clamp(travel*.96)*(.72+.28*Math.sin(now*.003*pt.speed+pt.phase))*(.7+.3*light);
+ctx.fillStyle='rgb('+rr+','+gg+','+bb+')';ctx.beginPath();ctx.arc(xx,yy,pt.size,0,two);ctx.fill();
 }
 ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
-if(logoPlate&&t>.91){ctx.globalAlpha=.22*smooth((t-.91)/.09);ctx.drawImage(logoPlate,0,0);ctx.globalAlpha=1}
-if(t<.47){let a=smooth((t-.20)/.15);ctx.fillStyle='rgba(248,147,193,'+(a*.15)+')';ctx.fillRect(0,H*.75,W,H*.25)}
-progress.style.width=(t*100)+'%';
-if(t<1)raf=requestAnimationFrame(render);
+if(logoCanvas&&p>.88){ctx.globalAlpha=.28*ease((p-.88)/.12);ctx.drawImage(logoCanvas,0,0);ctx.globalAlpha=1}
+bar.style.width=(p*100)+'%';
+status.style.opacity=(p>.25&&p<.56)?'1':'0';
+if(p<1){frame=requestAnimationFrame(draw)}else{status.style.opacity='0'}
 }
-function replay(){cancelAnimationFrame(raf);started=performance.now();raf=requestAnimationFrame(render)}
-document.getElementById('replay').onclick=replay;document.getElementById('enter').onclick=()=>location.href='./index.html#services';
-window.addEventListener('resize',()=>{make();replay()},{passive:true});
-document.fonts.ready.then(()=>{make();if(matchMedia('(prefers-reduced-motion:reduce)').matches)started=performance.now()-DUR;raf=requestAnimationFrame(render)});
+function replay(){cancelAnimationFrame(frame);start=performance.now();frame=requestAnimationFrame(draw)}
+document.getElementById('again').onclick=replay;document.getElementById('go').onclick=()=>location.href='./index.html#services';
+addEventListener('resize',()=>{make();replay()},{passive:true});
+document.fonts.ready.then(()=>{make();if(matchMedia('(prefers-reduced-motion: reduce)').matches)start=performance.now()-T;frame=requestAnimationFrame(draw)});
 })();
 </script></body></html>
