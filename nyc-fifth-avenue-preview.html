@@ -42,7 +42,7 @@ for(let z=62;z>-106;z-=13){
   storefront.position.set(x,2.2,z);scene.add(storefront);
   const accent=new THREE.Mesh(new THREE.BoxGeometry(.25,.32,6.1),new THREE.MeshBasicMaterial({color:0xffe1ce}));
   accent.position.set(x,4.2,z);scene.add(accent);
-  const halo=new THREE.PointLight(z%2?0xff7db6:0xffd7ae,12,16);halo.position.set(x-side*1.5,3,z);scene.add(halo);
+  if(Math.round(z/13)%4===0){const halo=new THREE.PointLight(0xffa6c8,15,25);halo.position.set(x-side*1.5,3,z);scene.add(halo)}
  }
 }
 const heroTower=new THREE.Group();heroTower.position.set(0,0,-116);scene.add(heroTower);
