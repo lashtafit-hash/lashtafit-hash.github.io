@@ -163,7 +163,7 @@ const vertex=[
 'vec4 mv=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*mv;',
 'float pix=mix(clamp(75.0/(-mv.z),1.0,2.6),1.55,uMorph);',
 'gl_PointSize=pix*uPixelRatio;',
-'vColor=color;vAlpha=mix(b,1.0,uMorph)*(.80+.20*sin(uTime*3.0+float(gl_VertexID)*.29));',
+'vColor=color;vAlpha=mix(b,1.0,uMorph)*(.80+.20*sin(uTime*3.0+aDelay*63.0));',
 '}'
 ].join('\n');
 const fragment=[
