@@ -192,7 +192,7 @@ const vs=[
 'float smoothEase(float v){v=clamp(v,0.0,1.0);return v*v*(3.0-2.0*v);}',
 'void main(){',
 'float tower=step(3.5,aKind);',
-'float build=mix(smoothEase((uBuild-aDelay)/(1.0-aDelay)),smoothEase((uBuild+.33-aDelay*.4)/(1.0-aDelay*.4)),tower);',
+'float build=mix(smoothEase((uBuild-aDelay)/(1.0-aDelay)),1.0,tower);',
 'vec3 p=mix(position,target,build);',
 'float travel=uMorph*uMorph*(3.0-2.0*uMorph);',
 'p=mix(p,aLogo,travel);',
