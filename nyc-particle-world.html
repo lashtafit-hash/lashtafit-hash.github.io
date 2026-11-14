@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090611"><meta name="description" content="WATCH•ME CREATIVE — an enchanted New York made of light."><title>WATCH•ME CREATIVE — New York, Written in Light</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;background:#070611;color:#fff;overflow:hidden;font-family:Manrope,Arial,sans-serif}
+#stage{position:fixed;inset:0}#stage canvas{display:block;width:100%;height:100%}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 25%,rgba(4,3,12,.22) 85%,rgba(4,3,12,.46) 100%)}
+#header{position:fixed;top:calc(env(safe-area-inset-top) + 23px);left:0;right:0;text-align:center;font-size:10px;letter-spacing:.31em;font-weight:700;color:#ffdae9;text-shadow:0 0 18px #ea83b9;opacity:.72;transition:opacity .6s}
+#controls{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 23px);left:0;right:0;display:flex;justify-content:center;gap:11px;z-index:5}
+button{background:#120b1cc9;border:1px solid #ffd7eb80;border-radius:99px;padding:13px 19px;color:#fff;backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);font:700 12px Manrope,Arial,sans-serif;cursor:pointer}
+button.primary{background:#ffe2ed;border-color:#ffe2ed;color:#2b1626}
+#progress{position:fixed;bottom:0;left:0;width:0;height:2px;background:#ffb5d5;box-shadow:0 0 15px #ff9ec7}
+#fallback{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 50%,#532e52,#070611 75%);display:none;place-items:center;text-align:center;font-size:clamp(28px,7vw,62px);font-weight:800;letter-spacing:-.07em}
+@media(max-width:500px){#header{font-size:9px;letter-spacing:.18em}}
+</style></head>
+<body><div id="stage"></div><div id="vignette"></div><div id="header">NEW YORK · WRITTEN IN LIGHT</div><div id="fallback">WATCH•ME CREATIVE</div><div id="controls"><button id="replay">↻ Replay</button><button id="enter" class="primary">Enter studio ↗</button></div><div id="progress"></div>
+<script>window.__nycLightReady=false;setTimeout(function(){if(!window.__nycLightReady)document.getElementById('fallback').style.display='grid'},8500)</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
+const PI=Math.PI,DURATION=8500,MOBILE=matchMedia('(max-width:700px)').matches;
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),ease=x=>{x=clamp(x);return x*x*(3-2*x)},lerp=(a,b,t)=>a+(b-a)*t;
+let seed=8173911;function rnd(){seed=seed*16807%2147483647;return(seed-1)/2147483646}
+const stage=document.getElementById('stage'),header=document.getElementById('header'),progress=document.getElementById('progress');
+let renderer,scene,camera,cloud,material,geometry,frame=0,t0=performance.now(),w=innerWidth,h=innerHeight;
+const points=[],palette=[new THREE.Color('#ffdbb1'),new THREE.Color('#ffb1d5'),new THREE.Color('#fff0dd'),new THREE.Color('#bfcaff')];
+function particle(x,y,z,kind,importance=1){if(!Number.isFinite(x+y+z))return;points.push([x,y,z,kind,importance])}
+function line(ax,ay,az,bx,by,bz,count,kind=0,imp=1){for(let i=0;i<count;i++){const q=(i+rnd()*.6)/count;particle(lerp(ax,bx,q),lerp(ay,by,q),lerp(az,bz,q),kind,imp)}}
+function glimmerSurface(x,z,width,depth,height,side){
+ const faceX=x-side*width*.51;
+ // Architectural outlines in fine silver-pink sparks, never solid walls.
+ for(const offset of [-width*.43,width*.43]){
+  line(x+offset,0,z+depth*.52,x+offset,height,z+depth*.52,Math.round(height*1.6),0,1.13);
+ }
+ for(const shift of [-depth*.45,depth*.45])line(faceX,0,z+shift,faceX,height,z+shift,Math.round(height*1.3),0,.83);
+ for(let floor=2.5;floor<height;floor+=3.1){
+  for(let a=0;a<14;a++){
+   const xx=x-width*.45+a*width/13;
+   if(rnd()<.16)continue;
+   const lit=rnd()>.26;
+   // Delicate interior window clusters on the street-facing facet.
+   if(lit)for(let k=0;k<3;k++)particle(xx+(rnd()-.5)*.28,floor+k*.37,z+depth*.532,1,.95+rnd()*.4);
+  }
+  for(let a=0;a<11;a++){
+   const zz=z-depth*.43+a*depth/10;
+   if(rnd()>.28)for(let k=0;k<3;k++)particle(faceX,floor+k*.37,zz+(rnd()-.5)*.26,1,.8+rnd()*.35)
+  }
+ }
+ // Small luminous architectural cornices and setbacks.
+ for(let y=9;y<height;y+=12){
+  line(x-width*.49,y,z+depth*.53,x+width*.49,y,z+depth*.53,Math.floor(width*1.8),0,.8)
+ }
+ for(let i=0;i<height*2.4;i++){
+  const zz=z+(rnd()-.5)*depth,yy=rnd()*height;
+  const xx=x+(rnd()-.5)*width;
+  // Micro dust scattered on building surfaces adds volume, not opaque blocks.
+  if(rnd()<.5)particle(xx,yy,z+depth*.52,2,.24);
+  else particle(faceX,yy,zz,2,.22);
+ }
+}
+function facetedCrown(x,z,w,d,h,style){
+ let sw=w,sd=d;
+ for(let tier=0;tier<3;tier++){
+  const y=h+tier*3.8;
+  sw*=.78;sd*=.78;
+  line(x-sw*.5,y,z+sd*.5,x+sw*.5,y,z+sd*.5,Math.max(12,Math.floor(sw*6)),0,.95);
+  line(x-sw*.5,y,z-sd*.5,x+sw*.5,y,z-sd*.5,Math.max(12,Math.floor(sw*5)),0,.8);
+  for(const sx of [-1,1])line(x+sx*sw*.5,y,z-sd*.5,x+sx*sw*.5,y,z+sd*.5,Math.max(10,Math.floor(sd*4)),0,.83);
+  if(style%3===0)for(let j=0;j<25;j++)particle(x+(rnd()-.5)*sw,y+rnd()*2,z+(rnd()-.5)*sd,1,.8);
+ }
+ if(style%8===0)line(x,h+12,z,x,h+23,z,55,1,1.1);
+}
+function buildCity(){
+ for(let i=0;i<20;i++){
+  const z=130-i*14;
+  for(const side of [-1,1]){
+   for(let row=0;row<2;row++){
+    const x=side*(17.5+row*11.8+rnd()*1.5),width=8+rnd()*2.6,depth=10+rnd()*3.6;
+    const height=(row===0?29:44)+rnd()*(row===0?49:63);
+    glimmerSurface(x,z,width,depth,height,side);
+    facetedCrown(x,z,width,depth,height,i+row);
+   }
+  }
+ }
+ // The whole roadway is only glints and reflected light, not a dark polygon.
+ for(let i=0;i<5000;i++){
+  const z=-215+rnd()*350,x=(rnd()-.5)*22;
+  const warmth=(rnd()<.68)?1:2;
+  particle(x,.03+rnd()*.05,z,warmth,.2+rnd()*.55);
+ }
+ for(let z=-218;z<135;z+=12){
+  line(-.09,.1,z,-.09,.1,z+3.4,20,1,.8);
+  for(const side of [-1,1]){
+   // Small warm curb and lamp sparks, drawn as light, not 3D lamp posts.
+   line(side*12,.15,z,side*12,.15,z+12,28,0,.6);
+  }
+ }
+ for(let z=-208;z<135;z+=24)for(const side of [-1,1]){
+  const x=side*12.7;
+  line(x,0,z,x,7.2,z,32,0,.75);
+  line(x,7.2,z,x-side*1.6,7.2,z,12,0,.95);
+  for(let i=0;i<18;i++){
+   const a=rnd()*PI*2,r=rnd()*1.2;
+   particle(x-side*1.6+Math.cos(a)*r,7.2+Math.sin(a)*r,z,1,1.6);
+  }
+ }
+ // Tiny floating fireflies & luminous atmospheric depth.
+ for(let i=0;i<3800;i++){
+  const x=(rnd()-.5)*100,y=3+rnd()*105,z=100-rnd()*335;
+  particle(x,y,z,3,.25+rnd()*.45);
+ }
+}
+function buildEmpire(){
+ const z=-250,facade=12.5,front=12.2;
+ // Faithful stepped art-deco silhouette; permanently part of the world.
+ function band(width,y,depth,amount=260){
+  line(-width*.5,y,z+depth*.5,width*.5,y,z+depth*.5,amount,4,1.8);
+  line(-width*.5,y,z-depth*.5,width*.5,y,z-depth*.5,Math.round(amount*.65),4,1.1);
+  line(-width*.5,y,z-depth*.5,-width*.5,y,z+depth*.5,70,4,1.25);
+  line(width*.5,y,z-depth*.5,width*.5,y,z+depth*.5,70,4,1.25);
+ }
+ const tiers=[
+ {y0:0,y1:82,w:27,d:24},{y0:82,y1:95,w:23,d:21},
+ {y0:95,y1:106,w:18,d:17},{y0:106,y1:116,w:13,d:13},
+ {y0:116,y1:127,w:8.8,d:9},{y0:127,y1:136,w:5.8,d:6}
+ ];
+ for(let ti=0;ti<tiers.length;ti++){
+  const t=tiers[ti],fw=t.w*.5,fd=t.d*.5;
+  band(t.w,t.y0,t.d,320);band(t.w,t.y1,t.d,270);
+  for(let i=0;i<9;i++){
+   const xx=-fw+i*t.w/8;
+   line(xx,t.y0,z+fd,xx,t.y1,z+fd,Math.round((t.y1-t.y0)*4),4,1.5);
+  }
+  for(const s of [-1,1])for(let i=0;i<5;i++){
+   const zz=z-fd+i*t.d/4;
+   line(s*fw,t.y0,zz,s*fw,t.y1,zz,Math.round((t.y1-t.y0)*3),4,1);
+  }
+  for(let y=t.y0+1.1;y<t.y1-1;y+=1.7){
+   for(let x=-fw+1.2;x<fw-1;x+=1.18){
+    if(rnd()>.13)for(let k=0;k<3;k++)particle(x+(rnd()-.5)*.20,y+k*.27,z+fd+.07,4,1.25+rnd()*.65)
+   }
+  }
+  for(let i=0;i<(t.y1-t.y0)*17;i++){
+   const xx=(rnd()-.5)*t.w,yy=t.y0+rnd()*(t.y1-t.y0);
+   particle(xx,yy,z+fd+.04,4,.5+rnd()*.8);
+  }
+ }
+ for(let y=136;y<167;y+=.21){
+  const radius=y>157?.08:.45+(167-y)*.018;
+  for(let j=0;j<6;j++){
+   let a=j*PI/3+rnd()*.18;
+   particle(Math.cos(a)*radius,y,z+Math.sin(a)*radius,4,1.7);
+  }
+ }
+ // Crown sparkle with golden-white concentric radiance.
+ for(let i=0;i<1700;i++){
+  const a=rnd()*PI*2,r=Math.pow(rnd(),1.7)*21,cy=119+rnd()*33;
+  particle(Math.cos(a)*r,cy,z+Math.sin(a)*r,4,.65+rnd()*1.1);
+ }
+}
+buildCity();buildEmpire();
+const N=MOBILE?44000:108000;
+const source=new Float32Array(N*3),destination=new Float32Array(N*3),logo=new Float32Array(N*3),
+colors=new Float32Array(N*3),aKind=new Float32Array(N),aImportance=new Float32Array(N),delays=new Float32Array(N);
+const towerPts=points.filter(p=>p[3]===4),cityPts=points.filter(p=>p[3]!==4);
+for(let i=0;i<N;i++){
+ const idx=i*3,isTower=i%5===0,pool=isTower?towerPts:cityPts,item=pool[Math.floor(rnd()*pool.length)];
+ const x=item[0],y=item[1],z=item[2],ang=rnd()*PI*2,r=25+rnd()*185;
+ destination[idx]=x;destination[idx+1]=y;destination[idx+2]=z;
+ source[idx]=Math.cos(ang)*r;source[idx+1]=-20+rnd()*185;source[idx+2]=-60+Math.sin(ang)*r;
+ aKind[i]=isTower?4:item[3];aImportance[i]=item[4];delays[i]=rnd()*.30;
+ const color=isTower?(rnd()<.54?palette[2]:palette[0]):palette[Math.floor(rnd()*palette.length)];
+ colors[idx]=color.r;colors[idx+1]=color.g;colors[idx+2]=color.b;
+}
+function fail(e){console.error('Luminous NYC',e);document.querySelector('#fallback').style.display='grid'}
+try{
+renderer=new THREE.WebGLRenderer({powerPreference:'high-performance',antialias:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,MOBILE?1.5:1.8));renderer.setSize(innerWidth,innerHeight);renderer.setClearColor(0x070611);
+stage.appendChild(renderer.domElement);scene=new THREE.Scene();scene.background=new THREE.Color(0x070611);
+camera=new THREE.PerspectiveCamera(MOBILE?68:62,innerWidth/innerHeight,.1,600);
+geometry=new THREE.BufferGeometry();
+geometry.setAttribute('position',new THREE.BufferAttribute(source,3));
+geometry.setAttribute('target',new THREE.BufferAttribute(destination,3));
+geometry.setAttribute('aLogo',new THREE.BufferAttribute(logo,3));
+geometry.setAttribute('color',new THREE.BufferAttribute(colors,3));
+geometry.setAttribute('aKind',new THREE.BufferAttribute(aKind,1));
+geometry.setAttribute('aImportance',new THREE.BufferAttribute(aImportance,1));
+geometry.setAttribute('aDelay',new THREE.BufferAttribute(delays,1));
+const vs=[
+'attribute vec3 target;attribute vec3 aLogo;attribute vec3 color;',
+'attribute float aKind;attribute float aImportance;attribute float aDelay;',
+'uniform float uBuild;uniform float uMorph;uniform float uTime;uniform float uDpr;',
+'varying vec3 vColor;varying float vAlpha;varying float vCore;',
+'float smoothEase(float v){v=clamp(v,0.0,1.0);return v*v*(3.0-2.0*v);}',
+'void main(){',
+'float tower=step(3.5,aKind);',
+'float build=mix(smoothEase((uBuild-aDelay)/(1.0-aDelay)),smoothEase((uBuild+.33-aDelay*.4)/(1.0-aDelay*.4)),tower);',
+'vec3 p=mix(position,target,build);',
+'float travel=uMorph*uMorph*(3.0-2.0*uMorph);',
+'p=mix(p,aLogo,travel);',
+'vec4 mv=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*mv;',
+'float twinkle=.80+.20*sin(uTime*(2.2+aImportance*.7)+aDelay*54.0);',
+'float baseSize=clamp(240.0/max(5.0,-mv.z),2.0,6.8);',
+'gl_PointSize=mix(baseSize,3.9,uMorph)*uDpr;',
+'vAlpha=mix(max(.13,build),1.0,uMorph)*twinkle;',
+'vCore=aImportance;',
+'vColor=color;',
+'}'
+].join('\n');
+const fs=[
+'precision mediump float;varying vec3 vColor;varying float vAlpha;varying float vCore;',
+'void main(){vec2 uv=gl_PointCoord-.5;float d=dot(uv,uv);',
+'float glow=.20*exp(-d*15.0)+.83*exp(-d*90.0);',
+'float a=glow*clamp(vCore,.15,1.7)*vAlpha;',
+'gl_FragColor=vec4(vColor,a);',
+'}'
+].join('\n');
+material=new THREE.ShaderMaterial({vertexShader:vs,fragmentShader:fs,depthWrite:false,transparent:true,blending:THREE.AdditiveBlending,uniforms:{
+uBuild:{value:0},uMorph:{value:0},uTime:{value:0},uDpr:{value:renderer.getPixelRatio()}}});
+cloud=new THREE.Points(geometry,material);cloud.frustumCulled=false;scene.add(cloud);
+function setCamera(t){
+ const f=ease((t-.31)/.40);
+ camera.position.set(Math.sin(f*PI)*1.1,lerp(28,12,f),lerp(182,-36,f));
+ camera.lookAt(0,lerp(70,78,f),-250);
+}
+function resize(){
+ w=innerWidth;h=innerHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();
+ setCamera(.9);camera.updateMatrixWorld();
+ const c=document.createElement('canvas');c.width=w;c.height=h;
+ const g=c.getContext('2d',{willReadFrequently:true});g.fillStyle='#fff';g.textAlign='center';g.textBaseline='middle';
+ let size=Math.min(w*.15,122);g.font='800 '+size+'px Manrope';
+ while(g.measureText('WATCH•ME').width>w*.92&&size>20){size--;g.font='800 '+size+'px Manrope'}
+ g.fillText('WATCH•ME',w*.5,h*.44-size*.42);g.font='800 '+size*.96+'px Manrope';g.fillText('CREATIVE',w*.5,h*.44+size*.76);
+ const pix=g.getImageData(0,0,w,h).data,samples=[];
+ for(let y=0;y<h;y+=2)for(let x=0;x<w;x+=2)if(pix[(y*w+x)*4+3]>150)samples.push([x,y]);
+ if(!samples.length)throw Error('No text particles');
+ const quat=camera.quaternion.clone(),cp=camera.position.clone();
+ const dist=23,halfY=Math.tan(camera.fov*PI/360)*dist,halfX=halfY*camera.aspect;
+ const vec=new THREE.Vector3();
+ for(let i=0;i<N;i++){
+  const p=samples[Math.floor(rnd()*samples.length)],j=i*3;
+  const x=(p[0]/w-.5)*2*halfX+(rnd()-.5)*halfX/w*2;
+  const y=(.5-p[1]/h)*2*halfY+(rnd()-.5)*halfY/h*2;
+  vec.set(x,y,-dist).applyQuaternion(quat).add(cp);
+  logo[j]=vec.x;logo[j+1]=vec.y;logo[j+2]=vec.z;
+ }
+ geometry.attributes.aLogo.needsUpdate=true;
+}
+function draw(now){
+ const t=clamp((now-t0)/DURATION);
+ setCamera(t);
+ material.uniforms.uBuild.value=ease(t/.26);
+ material.uniforms.uMorph.value=ease((t-.80)/.19);
+ material.uniforms.uTime.value=now*.001;
+ renderer.render(scene,camera);
+ progress.style.width=(t*100)+'%';
+ header.style.opacity=t>.78?'0':'.72';
+ if(t<1)frame=requestAnimationFrame(draw);
+}
+function replay(){cancelAnimationFrame(frame);t0=performance.now();frame=requestAnimationFrame(draw)}
+document.getElementById('replay').onclick=replay;
+document.getElementById('enter').onclick=()=>location.href='./index.html#services';
+addEventListener('resize',()=>{resize();replay()},{passive:true});
+document.fonts.ready.then(()=>{resize();window.__nycLightReady=true;frame=requestAnimationFrame(draw)});
+}catch(e){fail(e)}
+</script></body></html>
