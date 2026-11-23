@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Как сделать анимированную заставку сайта с ChatGPT и Codex — WATCH•ME CREATIVE</title><meta name="description" content="Урок: как описать и собрать анимацию сайта через ChatGPT и Codex. Canvas, частицы, камера, мобильная оптимизация, Skip Intro и сохранение фирменного дизайна.">
+<link rel="canonical" href="https://watchmecreative.space/guides/animated-website-with-chatgpt-codex/">
+<meta property="og:type" content="article"><meta property="og:site_name" content="WATCH•ME CREATIVE">
+<meta property="og:title" content="Как сделать анимированную заставку сайта с ChatGPT и Codex"><meta property="og:description" content="Урок: как описать и собрать анимацию сайта через ChatGPT и Codex. Canvas, частицы, камера, мобильная оптимизация, Skip Intro и сохранение фирменного дизайна.">
+<meta property="og:url" content="https://watchmecreative.space/guides/animated-website-with-chatgpt-codex/"><meta property="og:image" content="https://watchmecreative.space/preview.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="/news/site.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Как сделать анимированную заставку сайта с ChatGPT и Codex","description":"Урок: как описать и собрать анимацию сайта через ChatGPT и Codex. Canvas, частицы, камера, мобильная оптимизация, Skip Intro и сохранение фирменного дизайна.","datePublished":"2026-11-24","dateModified":"2026-11-24","inLanguage":"ru-RU","mainEntityOfPage":"https://watchmecreative.space/guides/animated-website-with-chatgpt-codex/","author":{"@type":"Organization","name":"WATCH•ME CREATIVE","url":"https://watchmecreative.space/"},"publisher":{"@type":"Organization","name":"WATCH•ME CREATIVE","url":"https://watchmecreative.space/"}}</script>
+</head><body><header class="news-head"><div class="wrap"><nav>
+<a class="logo" href="/" aria-label="WATCH ME CREATIVE — главная">WATCH<i>•</i>ME<small>CREATIVE</small></a>
+<div class="navlinks"><a class="plain" href="/">Главная</a><a class="plain" href="/news/">Новости ИИ</a><a class="btn" href="https://t.me/Foxaifriend_bot?start=wm_us_services_en" target="_blank" rel="noopener noreferrer">Обсудить проект</a></div>
+</nav><a class="news-mobile-nav" href="/">← На главную</a></div></header><main class="wrap news-main"><article class="news-copy">
+<a class="news-breadcrumb" href="/news/">← Новости и уроки</a>
+<p class="eyebrow">УРОК / CHATGPT + CODEX / ВЕБ-АНИМАЦИЯ</p><h1>Как сделать анимированную заставку сайта с ChatGPT и Codex</h1>
+<p class="news-date">Опубликовано: 24 ноября 2026 · Автор: WATCH•ME CREATIVE</p>
+<p class="news-lede">Не анимация одной картинки, а настоящая заставка сайта, которую браузер рисует кодом: частицы, глубина, движение камеры и переход к основному экрану.</p>
+
+<h2>Какую анимацию мы будем делать</h2>
+<p>Пример задачи: при открытии сайта пользователь видит тёмный ночной город. Частицы постепенно собираются в силуэты улиц и небоскрёбов, камера движется вглубь, а затем заставка мягко уступает место главному экрану сайта. Для WATCH•ME CREATIVE примером служит магический Манхэттен с Empire State Building в перспективе и финальным появлением названия агентства.</p>
+<p><strong>Важно:</strong> веб-анимацию можно реализовать через Canvas 2D или WebGL/Three.js. Конкретный выбор зависит от задачи и бюджета производительности. В этом уроке мы описываем практический процесс, а не обещаем, что один промпт всегда создаст идеальную 3D-сцену.</p>
+<h2>Шаг 1. Сформулируйте визуальное техническое задание</h2>
+<p>Не пишите «сделай красивую анимацию». Опишите, что видно <strong>в первом кадре</strong>, как движется камера, что происходит в середине, как выглядит финал и сколько длится переход. Пропишите палитру, шрифты и ограничение: не менять текущий сайт.</p>
+<div class="news-note"><p><strong>Пример:</strong> «Создай 6–7-секундную интерактивную заставку перед существующей главной страницей. С первого кадра Empire State Building видна в глубине улицы Манхэттена. Силуэты зданий состоят из множества мерцающих точек. Камера плавно летит по перспективе улицы. В финале частицы растворяются, остаётся действующий логотип WATCH•ME CREATIVE. Используй только существующие цвета и шрифты сайта. Не меняй содержимое главной».</p></div>
+<h2>Шаг 2. Передайте агенту реальный исходный код</h2>
+<p>Откройте проект в Codex и дайте ему доступ к репозиторию или локальной папке сайта. Попросите сначала прочитать <code>index.html</code>, CSS, анимационные скрипты и существующие адаптивные правила. Если сайт уже содержит фирменные переменные, используйте их, а не придумывайте новые.</p>
+<p>Для агентства WATCH•ME CREATIVE источник визуальной правды — действующий сайт: Cormorant Garamond, Inter и существующие переменные цветов. Мы не разрешаем агенту заменять типографику, придумывать новые кнопки или переписывать всю главную ради заставки.</p>
+<h2>Шаг 3. Выберите технологию</h2>
+<ul><li><strong>Canvas 2D:</strong> хороший выбор для лёгкой анимации точек, силуэтов и движения в псевдо-3D, когда не нужна полноценная трёхмерная геометрия.</li><li><strong>Three.js / WebGL:</strong> полезен, если важны объёмные здания, настоящая камера, перспективные трансформации и множество объектов.</li><li><strong>GSAP:</strong> может помогать с таймингами и переходами DOM-элементов, но добавляйте библиотеку только при реальной необходимости.</li></ul>
+<h2>Шаг 4. Соберите анимацию по слоям</h2>
+<ol><li><strong>Первый кадр:</strong> фон, линия горизонта, центральная точка перспективы.</li><li><strong>Объекты:</strong> здания и световые частицы, масштабируемые по глубине.</li><li><strong>Камера:</strong> плавное движение, без резких рывков и скачков масштаба.</li><li><strong>Финал:</strong> постепенное затухание Canvas, появление существующей главной страницы без перескока верстки.</li><li><strong>Управление:</strong> кнопка Skip Intro, поддержка повторного просмотра, если она нужна.</li></ol>
+<p>Проще отлаживать последовательные части, чем сразу требовать от агента сложную сцену целиком.</p>
+<h2>Шаг 5. Обеспечьте плавность</h2>
+<p>Для покадровой анимации используйте <code>requestAnimationFrame</code> и считайте изменение времени между кадрами. Не привязывайте скорость движения к фиксированным «60 кадрам в секунду». Пример базовой структуры:</p>
+<pre><code>const canvas = document.querySelector(&quot;#introCanvas&quot;);
+const ctx = canvas.getContext(&quot;2d&quot;);
+let rafId;
+let last = performance.now();
+
+function frame(now) {
+  const dt = Math.min((now - last) / 1000, 0.05);
+  last = now;
+  // Обновить координаты частиц с учётом dt.
+  // Очистить холст и нарисовать следующий кадр.
+  rafId = requestAnimationFrame(frame);
+}
+rafId = requestAnimationFrame(frame);</code></pre>
+<p>Для сложных частиц используйте эффективное хранение координат и избегайте создания тысяч DOM-элементов. Ограничивайте плотность на мобильных устройствах и учитывайте <code>devicePixelRatio</code>.</p>
+<h2>Шаг 6. Не сломайте мобильную версию</h2>
+<p>Проверьте iPhone Safari, экраны 320–430 px, сценарии с медленным устройством и <code>prefers-reduced-motion</code>. Кнопка пропуска должна работать всегда. Анимация не должна навечно блокировать прокрутку, скрывать основной контент от поискового робота или заставлять ждать пользователя, которому она не нужна.</p>
+<h2>Шаг 7. Проверьте дизайн до публикации</h2>
+<p>Попросите Codex показать изменения в отдельных файлах и дать локальный preview. Сравните <strong>до и после</strong>: название, шрифты, цвета, расположение текста, работа кнопок, скорость первой загрузки. Если менялась только заставка, остальной интерфейс должен остаться идентичным.</p>
+<h2>Готовый промпт для Codex</h2>
+<div class="news-note"><p>«Изучи существующий сайт и сначала выпиши его реальные шрифты, CSS-переменные и структуру интро. Добавь плавную анимированную сцену ночного Манхэттена из частиц с перспективой улицы и узнаваемым Empire State Building на первом кадре. Сохрани все оригинальные элементы, размеры, языковые переключатели, CTA, SEO-теги и стили без замены. Обеспечь адаптивность, reduced-motion, Skip Intro, корректную очистку анимации и отсутствие ошибок в консоли. Разработай в отдельной ветке и покажи preview, не публикуй без проверки».</p></div>
+<h2>Что получится</h2>
+<p>У вас будет редактируемая анимация внутри настоящего веб-сайта — не тяжёлое видео на фоне и не зацикленная картинка. Вместе с кодом останется возможность менять траекторию, скорость, количество частиц и финальную сцену без пересоздания ролика с нуля.</p>
+<div class="news-source"><p>Технические справочники: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame" target="_blank" rel="noopener noreferrer">MDN — requestAnimationFrame</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion" target="_blank" rel="noopener noreferrer">MDN — prefers-reduced-motion</a>, <a href="https://threejs.org/docs/" target="_blank" rel="noopener noreferrer">Three.js Documentation</a>. Урок подготовлен на основе процесса работы WATCH•ME CREATIVE над собственной заставкой сайта.</p></div>
+<div class="news-more"><a href="/news/">← Смотреть другие новости и уроки</a></div>
+</article><footer><span>© 2026 WATCH•ME CREATIVE</span><a href="/">Главная</a><a href="/news/">Новости ИИ</a></footer></main></body></html>
