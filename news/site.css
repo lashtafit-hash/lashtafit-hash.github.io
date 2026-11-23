@@ -280,3 +280,22 @@ footer button:hover { color: var(--cream); }
 .wm-copy-prompt:hover, .wm-copy-prompt:focus-visible { border-color: var(--champagne); color: var(--champagne); }
 .news-copy .wm-prompt pre { margin: 0; border: 0; background: transparent; padding: 20px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .news-copy .wm-prompt code { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--text); font-size: 13px; line-height: 1.8; }
+
+/* Editorial Reel visualizations — existing WATCH•ME type, spacing and palette only. */
+.reel-example { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);align-items:center;gap:clamp(14px,3vw,34px);margin:15px 0 34px; }
+.reel-example--reverse { grid-template-columns:minmax(0,250px) minmax(0,1fr); }
+.reel-example__copy { min-width:0; }
+.news-copy .reel-example__copy h3:first-child { margin-top:0; }
+.reel-example__copy ul { margin-bottom:0; }
+.reel-example__art { position:relative;isolation:isolate;max-width:250px;width:100%;margin:0 auto; }
+.reel-example__art::before { content:"";position:absolute;inset:12%;background:radial-gradient(ellipse at center,rgba(75,16,29,.4),transparent 75%);pointer-events:none; }
+.reel-example__art img { position:relative;display:block;width:100%;height:auto;-webkit-mask-image:radial-gradient(ellipse 67% 68% at 50% 50%,#000 41%,transparent 100%);mask-image:radial-gradient(ellipse 67% 68% at 50% 50%,#000 41%,transparent 100%); }
+.news-copy .reel-example__art figcaption { margin:-2px 0 0;font:400 10px/1.5 var(--text);letter-spacing:.16em;text-transform:uppercase;text-align:center;color:var(--mute);opacity:.72; }
+.reel-example--reverse .reel-example__copy { grid-column:2;grid-row:1; }
+.reel-example--reverse .reel-example__art { grid-column:1;grid-row:1; }
+@media (max-width:700px) {
+ .reel-example,.reel-example--reverse { display:flex;flex-direction:column;align-items:stretch;gap:12px;margin-top:10px; }
+ .reel-example__art { width:min(74%,250px);max-width:250px;margin:0 auto 8px; }
+ .reel-example__copy { order:0; }
+ .reel-example__art { order:1; }
+}
