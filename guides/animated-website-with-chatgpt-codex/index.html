@@ -1,63 +1,145 @@
 <!doctype html>
 <html lang="ru"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Как сделать анимированную заставку сайта с ChatGPT и Codex — WATCH•ME CREATIVE</title><meta name="description" content="Урок: как описать и собрать анимацию сайта через ChatGPT и Codex. Canvas, частицы, камера, мобильная оптимизация, Skip Intro и сохранение фирменного дизайна.">
+<title>3 AI-эффекта для Reels: промпты, механика и монтаж — WATCH•ME CREATIVE</title><meta name="description" content="Три эффекта для Reels: вылетающие карточки, аналитика над ладонью и дождь из карт Таро. Готовые промпты и правила синхронизации эффектов с жестами.">
 <link rel="canonical" href="https://watchmecreative.space/guides/animated-website-with-chatgpt-codex/">
 <meta property="og:type" content="article"><meta property="og:site_name" content="WATCH•ME CREATIVE">
-<meta property="og:title" content="Как сделать анимированную заставку сайта с ChatGPT и Codex"><meta property="og:description" content="Урок: как описать и собрать анимацию сайта через ChatGPT и Codex. Canvas, частицы, камера, мобильная оптимизация, Skip Intro и сохранение фирменного дизайна.">
+<meta property="og:title" content="3 AI-эффекта для Reels: промпты, механика и монтаж"><meta property="og:description" content="Три эффекта для Reels: вылетающие карточки, аналитика над ладонью и дождь из карт Таро. Готовые промпты и правила синхронизации эффектов с жестами.">
 <meta property="og:url" content="https://watchmecreative.space/guides/animated-website-with-chatgpt-codex/"><meta property="og:image" content="https://watchmecreative.space/preview.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="/news/site.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Как сделать анимированную заставку сайта с ChatGPT и Codex","description":"Урок: как описать и собрать анимацию сайта через ChatGPT и Codex. Canvas, частицы, камера, мобильная оптимизация, Skip Intro и сохранение фирменного дизайна.","datePublished":"2026-11-24","dateModified":"2026-11-24","inLanguage":"ru-RU","mainEntityOfPage":"https://watchmecreative.space/guides/animated-website-with-chatgpt-codex/","author":{"@type":"Organization","name":"WATCH•ME CREATIVE","url":"https://watchmecreative.space/"},"publisher":{"@type":"Organization","name":"WATCH•ME CREATIVE","url":"https://watchmecreative.space/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"3 AI-эффекта для Reels: промпты, механика и монтаж","description":"Три эффекта для Reels: вылетающие карточки, аналитика над ладонью и дождь из карт Таро. Готовые промпты и правила синхронизации эффектов с жестами.","datePublished":"2026-11-24","dateModified":"2026-11-24","inLanguage":"ru-RU","mainEntityOfPage":"https://watchmecreative.space/guides/animated-website-with-chatgpt-codex/","author":{"@type":"Organization","name":"WATCH•ME CREATIVE","url":"https://watchmecreative.space/"},"publisher":{"@type":"Organization","name":"WATCH•ME CREATIVE","url":"https://watchmecreative.space/"}}</script>
 </head><body><header class="news-head"><div class="wrap"><nav>
 <a class="logo" href="/" aria-label="WATCH ME CREATIVE — главная">WATCH<i>•</i>ME<small>CREATIVE</small></a>
 <div class="navlinks"><a class="plain" href="/">Главная</a><a class="plain" href="/news/">Новости ИИ</a><a class="btn" href="https://t.me/Foxaifriend_bot?start=wm_us_services_en" target="_blank" rel="noopener noreferrer">Обсудить проект</a></div>
 </nav><a class="news-mobile-nav" href="/">← На главную</a></div></header><main class="wrap news-main"><article class="news-copy">
 <a class="news-breadcrumb" href="/news/">← Новости и уроки</a>
-<p class="eyebrow">УРОК / CHATGPT + CODEX / ВЕБ-АНИМАЦИЯ</p><h1>Как сделать анимированную заставку сайта с ChatGPT и Codex</h1>
+<p class="eyebrow">УРОК / AI-ВИДЕО / REELS</p><h1>3 AI-эффекта для Reels: промпты, механика и монтаж</h1>
 <p class="news-date">Опубликовано: 24 ноября 2026 · Автор: WATCH•ME CREATIVE</p>
-<p class="news-lede">Не анимация одной картинки, а настоящая заставка сайта, которую браузер рисует кодом: частицы, глубина, движение камеры и переход к основному экрану.</p>
+<p class="news-lede">Как поставить эффект точно на жест и слово: три вертикальные карточки Reels, счётчик над ладонью и карты Таро, которые падают в руку и собираются в колоду. С готовыми промптами для монтажного ИИ.</p>
 
-<h2>Какую анимацию мы будем делать</h2>
-<p>Пример задачи: при открытии сайта пользователь видит тёмный ночной город. Частицы постепенно собираются в силуэты улиц и небоскрёбов, камера движется вглубь, а затем заставка мягко уступает место главному экрану сайта. Для WATCH•ME CREATIVE примером служит магический Манхэттен с Empire State Building в перспективе и финальным появлением названия агентства.</p>
-<p><strong>Важно:</strong> веб-анимацию можно реализовать через Canvas 2D или WebGL/Three.js. Конкретный выбор зависит от задачи и бюджета производительности. В этом уроке мы описываем практический процесс, а не обещаем, что один промпт всегда создаст идеальную 3D-сцену.</p>
-<h2>Шаг 1. Сформулируйте визуальное техническое задание</h2>
-<p>Не пишите «сделай красивую анимацию». Опишите, что видно <strong>в первом кадре</strong>, как движется камера, что происходит в середине, как выглядит финал и сколько длится переход. Пропишите палитру, шрифты и ограничение: не менять текущий сайт.</p>
-<div class="news-note"><p><strong>Пример:</strong> «Создай 6–7-секундную интерактивную заставку перед существующей главной страницей. С первого кадра Empire State Building видна в глубине улицы Манхэттена. Силуэты зданий состоят из множества мерцающих точек. Камера плавно летит по перспективе улицы. В финале частицы растворяются, остаётся действующий логотип WATCH•ME CREATIVE. Используй только существующие цвета и шрифты сайта. Не меняй содержимое главной».</p></div>
-<h2>Шаг 2. Передайте агенту реальный исходный код</h2>
-<p>Откройте проект в Codex и дайте ему доступ к репозиторию или локальной папке сайта. Попросите сначала прочитать <code>index.html</code>, CSS, анимационные скрипты и существующие адаптивные правила. Если сайт уже содержит фирменные переменные, используйте их, а не придумывайте новые.</p>
-<p>Для агентства WATCH•ME CREATIVE источник визуальной правды — действующий сайт: Cormorant Garamond, Inter и существующие переменные цветов. Мы не разрешаем агенту заменять типографику, придумывать новые кнопки или переписывать всю главную ради заставки.</p>
-<h2>Шаг 3. Выберите технологию</h2>
-<ul><li><strong>Canvas 2D:</strong> хороший выбор для лёгкой анимации точек, силуэтов и движения в псевдо-3D, когда не нужна полноценная трёхмерная геометрия.</li><li><strong>Three.js / WebGL:</strong> полезен, если важны объёмные здания, настоящая камера, перспективные трансформации и множество объектов.</li><li><strong>GSAP:</strong> может помогать с таймингами и переходами DOM-элементов, но добавляйте библиотеку только при реальной необходимости.</li></ul>
-<h2>Шаг 4. Соберите анимацию по слоям</h2>
-<ol><li><strong>Первый кадр:</strong> фон, линия горизонта, центральная точка перспективы.</li><li><strong>Объекты:</strong> здания и световые частицы, масштабируемые по глубине.</li><li><strong>Камера:</strong> плавное движение, без резких рывков и скачков масштаба.</li><li><strong>Финал:</strong> постепенное затухание Canvas, появление существующей главной страницы без перескока верстки.</li><li><strong>Управление:</strong> кнопка Skip Intro, поддержка повторного просмотра, если она нужна.</li></ol>
-<p>Проще отлаживать последовательные части, чем сразу требовать от агента сложную сцену целиком.</p>
-<h2>Шаг 5. Обеспечьте плавность</h2>
-<p>Для покадровой анимации используйте <code>requestAnimationFrame</code> и считайте изменение времени между кадрами. Не привязывайте скорость движения к фиксированным «60 кадрам в секунду». Пример базовой структуры:</p>
-<pre><code>const canvas = document.querySelector(&quot;#introCanvas&quot;);
-const ctx = canvas.getContext(&quot;2d&quot;);
-let rafId;
-let last = performance.now();
 
-function frame(now) {
-  const dt = Math.min((now - last) / 1000, 0.05);
-  last = now;
-  // Обновить координаты частиц с учётом dt.
-  // Очистить холст и нарисовать следующий кадр.
-  rafId = requestAnimationFrame(frame);
-}
-rafId = requestAnimationFrame(frame);</code></pre>
-<p>Для сложных частиц используйте эффективное хранение координат и избегайте создания тысяч DOM-элементов. Ограничивайте плотность на мобильных устройствах и учитывайте <code>devicePixelRatio</code>.</p>
-<h2>Шаг 6. Не сломайте мобильную версию</h2>
-<p>Проверьте iPhone Safari, экраны 320–430 px, сценарии с медленным устройством и <code>prefers-reduced-motion</code>. Кнопка пропуска должна работать всегда. Анимация не должна навечно блокировать прокрутку, скрывать основной контент от поискового робота или заставлять ждать пользователя, которому она не нужна.</p>
-<h2>Шаг 7. Проверьте дизайн до публикации</h2>
-<p>Попросите Codex показать изменения в отдельных файлах и дать локальный preview. Сравните <strong>до и после</strong>: название, шрифты, цвета, расположение текста, работа кнопок, скорость первой загрузки. Если менялась только заставка, остальной интерфейс должен остаться идентичным.</p>
-<h2>Готовый промпт для Codex</h2>
-<div class="news-note"><p>«Изучи существующий сайт и сначала выпиши его реальные шрифты, CSS-переменные и структуру интро. Добавь плавную анимированную сцену ночного Манхэттена из частиц с перспективой улицы и узнаваемым Empire State Building на первом кадре. Сохрани все оригинальные элементы, размеры, языковые переключатели, CTA, SEO-теги и стили без замены. Обеспечь адаптивность, reduced-motion, Skip Intro, корректную очистку анимации и отсутствие ошибок в консоли. Разработай в отдельной ветке и покажи preview, не публикуй без проверки».</p></div>
-<h2>Что получится</h2>
-<p>У вас будет редактируемая анимация внутри настоящего веб-сайта — не тяжёлое видео на фоне и не зацикленная картинка. Вместе с кодом останется возможность менять траекторию, скорость, количество частиц и финальную сцену без пересоздания ролика с нуля.</p>
-<div class="news-source"><p>Технические справочники: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame" target="_blank" rel="noopener noreferrer">MDN — requestAnimationFrame</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion" target="_blank" rel="noopener noreferrer">MDN — prefers-reduced-motion</a>, <a href="https://threejs.org/docs/" target="_blank" rel="noopener noreferrer">Three.js Documentation</a>. Урок подготовлен на основе процесса работы WATCH•ME CREATIVE над собственной заставкой сайта.</p></div>
+<h2>Что ты увидишь в кадре</h2>
+<p>В этом уроке — <strong>три типа эффектов для вертикальных Reels</strong>: интерфейсные вставки, парящие медиа-карточки и магическая предметная анимация. Их можно описать обычными словами и передать монтажному AI-агенту — например, Claude или Codex в проекте видеомонтажа, либо инструменту генерации видео.</p>
+<p>Здесь важен не один красивый объект, а его <strong>связь с движением руки и точной репликой в исходном видео</strong>. Ниже — визуальная механика, ограничения и промпты, которые можно копировать.</p>
+<h2>01 / Вылетающие Reels-карточки над руками</h2>
+<h3>Как выглядит эффект</h3>
+<p>Ты говоришь: <strong>«Нейросеть может делать это»</strong>, поднимаешь пальцы вверх — и над руками плавно всплывают три вертикальные видеокарточки, как мини-Reels. Они поднимаются из жеста, выстраиваются слева, по центру и справа, немного зависают и только потом мягко исчезают.</p>
+<h3>Что нужно задать в промпте</h3>
+<ul>
+<li>Карточки появляются <strong>над жестом</strong>, не в случайной точке кадра.</li>
+<li>Появление начинается на слове <strong>«это»</strong>, а не раньше.</li>
+<li>Карточки достаточно долго держатся в кадре, чтобы их успели прочитать.</li>
+<li>Композиция ровная, симметричная и управляемая — не хаотичный разлёт.</li>
+</ul>
+<section class="wm-prompt" aria-label="Промпт / Вылетающие Reels-карточки"><div class="wm-prompt-head"><p class="wm-prompt-label">Промпт / Вылетающие Reels-карточки</p><button type="button" class="wm-copy-prompt" data-copy-prompt="prompt-reels-cards" aria-label="Скопировать промпт">Скопировать промпт</button></div><pre><code id="prompt-reels-cards">Create a premium vertical social-media effect overlay for a talking-head Reel.
+Three mini vertical video cards should rise smoothly upward above the speaker’s raised hands right when she says “this”. The cards should appear elegant, glossy, slightly glassy, and premium, like floating Reels previews.
+The cards should emerge from the gesture, not randomly from empty space. Arrange them in a clean balanced composition above the hands: left, center, and right. Let them hover for a moment so the viewer can read them, then fade out gently.
+Style: soft luxury, rose-pink and cream tones, subtle glow, polished motion design, cinematic but clean. No chaotic movement. Motion should feel controlled and intentional.</code></pre></section>
+<div class="news-note"><p><strong>Как объяснить в уроке:</strong> «Я не пишу “сделай красиво”. Я задаю точку появления, логику движения и поведение объекта: откуда он вылетает, где висит и как исчезает».</p></div>
+<h2>02 / Бегущие цифры и метрики на ладони</h2>
+<h3>Как выглядит эффект</h3>
+<p>Над открытой <strong>левой ладонью</strong> появляется полупрозрачная аналитическая карточка. Цифровой счётчик плавно увеличивается до нужного значения, а рядом оживает график роста. Карточка словно стоит на ладони и движется вместе с ней.</p>
+<h3>Что важно</h3>
+<ul>
+<li>Интерфейс должен быть привязан к ладони, а не просто наложен поверх видео.</li>
+<li>Цифры <strong>анимируются</strong>, график рисуется или меняется во времени.</li>
+<li>Текст и числа остаются читаемыми.</li>
+<li>Вставка выглядит как полезный бизнес-интерфейс, а не случайная табличка.</li>
+</ul>
+<section class="wm-prompt" aria-label="Промпт / Метрики на ладони"><div class="wm-prompt-head"><p class="wm-prompt-label">Промпт / Метрики на ладони</p><button type="button" class="wm-copy-prompt" data-copy-prompt="prompt-reels-analytics" aria-label="Скопировать промпт">Скопировать промпт</button></div><pre><code id="prompt-reels-analytics">Create a luxury glass-style analytics overlay floating above an open palm in a vertical Reel.
+The overlay should look like a premium translucent dashboard card with rounded corners, soft rose-pink highlights, and subtle glow. It should contain an animated counter that counts upward to a target number, plus a clean growth line chart.
+The overlay must appear anchored to the hand, as if the speaker is presenting it. It should rise softly, hold in place for readability, and feel useful for business or expert content. Motion should be elegant and controlled, not flashy.</code></pre></section>
+<div class="news-note"><p><strong>Как объяснить в уроке:</strong> «Для экспертных рилсов AI может не только делать “вау”, но и показывать полезные визуальные элементы: цифры, графики, счётчики, интерфейсы».</p></div>
+<h2>03 / Дождь из карт → колода → вылетает Маг</h2>
+<h3>Как выглядит эффект</h3>
+<p>Ты произносишь: <strong>«И даже вот это»</strong>. Сверху начинают сыпаться карты Таро. Они падают в открытую <strong>правую ладонь</strong>, кувыркаются, собираются в физическую колоду, лежащую на руке. Пока последние карты ещё падают, одна карта <strong>вылетает из формирующейся колоды</strong>, поднимается, поворачивается лицом к камере и показывает Мага. Это одно непрерывное действие.</p>
+<h3>Чего нельзя допускать</h3>
+<ul>
+<li>Карты не должны просто висеть над рукой: они <strong>падают сверху вниз</strong>.</li>
+<li>Должно быть видно, как из них собирается <strong>колода на ладони</strong>.</li>
+<li>Карта Маг вылетает <strong>в момент сборки</strong>, а не после длинной паузы.</li>
+<li>Маг переворачивается лицом к зрителю и на мгновение остаётся видимым.</li>
+<li>Никаких дополнительных текстовых надписей «Маг» поверх изображения.</li>
+</ul>
+<section class="wm-prompt" aria-label="Промпт / Дождь из карт Таро"><div class="wm-prompt-head"><p class="wm-prompt-label">Промпт / Дождь из карт Таро</p><button type="button" class="wm-copy-prompt" data-copy-prompt="prompt-reels-tarot" aria-label="Скопировать промпт">Скопировать промпт</button></div><pre><code id="prompt-reels-tarot">Create a magical tarot visual effect for a vertical Reel.
+A stream of tarot cards should fall from above into the speaker’s open palm, as if someone is pouring cards from the air into her hand. The cards should tumble downward, rotate naturally, and gather into a physical tarot deck resting on the palm.
+While the last cards are still falling, one selected card should rise dramatically out of the forming deck, float upward, and flip face-up to reveal The Magician tarot card.
+The motion should feel magical, elegant, and cinematic. Add subtle glowing particles and a soft mystical aura, but keep the effect clean and premium. The main illusion is: cards raining from above into the hand, forming a deck, and the Magician card emerging from that deck in one continuous action.</code></pre></section>
+<h3>Уточнение, если механика получилась неправильной</h3>
+<p>Если AI сделал случайно плавающие карты вместо сборки колоды, добавь к предыдущему промпту эти инструкции:</p>
+<section class="wm-prompt" aria-label="Уточняющий промпт / Механика карт"><div class="wm-prompt-head"><p class="wm-prompt-label">Уточняющий промпт / Механика карт</p><button type="button" class="wm-copy-prompt" data-copy-prompt="prompt-reels-tarot-fix" aria-label="Скопировать промпт">Скопировать промпт</button></div><pre><code id="prompt-reels-tarot-fix">Important motion notes:
+- The cards must clearly fall from above into the hand.
+- The deck should visibly build in the palm from the falling cards.
+- The chosen card should emerge while the deck is still forming, not long after.
+- The Magician card should flip toward the camera and remain visible briefly.
+- No extra text labels on screen.</code></pre></section>
+<div class="news-note"><p><strong>Как объяснить в уроке:</strong> «Самая частая ошибка — описывать только объект. Надо описывать механику: откуда он приходит, куда собирается, в какой момент трансформируется и сколько времени живёт в кадре».</p></div>
+<h2>Главный принцип: хороший промпт — это режиссура</h2>
+<p><strong>Формула эффекта:</strong> объект + откуда появляется + как двигается + где привязан + в какой момент срабатывает + как исчезает.</p>
+<p><strong>Слабо:</strong> «Сделай карты и Мага».</p>
+<p><strong>Конкретно:</strong> «Карты падают сверху в ладонь, собираются в колоду, из колоды вылетает одна карта и переворачивается лицом».</p>
+<p>Нейросети мало сказать «сделай магию». Ей нужно объяснить физику сцены: откуда объект появляется, как двигается, к чему привязан и на какой реплике должен сработать.</p>
+<h2>Один общий промпт на сборку фрагмента Reels</h2>
+<p>Если монтаж выполняет Claude, Codex или другой AI-редактор, можно дать одно техническое задание на все три эффекта — вместе с исходным роликом. Монтаж должен учитывать слова, жесты, звук и существующие субтитры.</p>
+<section class="wm-prompt" aria-label="Общий промпт / Монтаж всех трёх эффектов"><div class="wm-prompt-head"><p class="wm-prompt-label">Общий промпт / Монтаж всех трёх эффектов</p><button type="button" class="wm-copy-prompt" data-copy-prompt="prompt-reels-montage" aria-label="Скопировать промпт">Скопировать промпт</button></div><pre><code id="prompt-reels-montage">Edit this vertical talking-head Reel and add synchronized AI-style motion effects tied to the speaker’s hand gestures and spoken words.
+At the line “Нейросеть может делать это”, when she points upward, three premium floating mini-Reels cards should rise above her hands and hover briefly.
+At the line where she presents examples, add a translucent analytics card above the left palm with an animated counter and a growth chart.
+Above the right palm, create a magical tarot effect: tarot cards fall from above into her hand, gather into a physical deck in the palm, and while the last cards are still falling, one selected card rises out of the deck, flips face-up, and reveals The Magician.
+All effects must be synchronized to the gesture and the exact words, not earlier. The objects should feel anchored to the hands. Motion should be elegant, premium, feminine, and visually impressive, with soft rose-pink highlights, glass-style UI, subtle glow, and clean cinematic compositing.
+Keep her voice and subtitles. Do not overload the frame. Each effect should remain visible long enough to read and enjoy.</code></pre></section>
+<h2>Визуализация эффектов: что показать зрителю</h2>
+<ol>
+<li><strong>Карточки:</strong> над руками всплывают три мини-Reels, словно ты управляешь ими жестом.</li>
+<li><strong>Метрики:</strong> на ладони появляется аналитическая карточка, цифры бегут вверх, график оживает.</li>
+<li><strong>Таро:</strong> сверху в ладонь сыплются карты, складываются в колоду, из неё вылетает Маг.</li>
+</ol>
+<h2>Шпаргалка: универсальный шаблон промпта</h2>
+<p>Используй шаблон для своей ниши. Вместо текста в квадратных скобках подставь конкретное действие, жест, место появления и желаемое движение.</p>
+<section class="wm-prompt" aria-label="Шаблон промпта / Заполни под свой эффект"><div class="wm-prompt-head"><p class="wm-prompt-label">Шаблон промпта / Заполни под свой эффект</p><button type="button" class="wm-copy-prompt" data-copy-prompt="prompt-reels-template" aria-label="Скопировать промпт">Скопировать промпт</button></div><pre><code id="prompt-reels-template">Create a [type of effect] for a vertical Reel.
+The effect should appear [where exactly].
+It should be triggered when the speaker [gesture / word].
+The object should emerge from [origin point].
+Then it should [main motion].
+It should stay visible for [duration feeling].
+Style: [mood / palette / finish].
+Important: [what must not happen].</code></pre></section>
+<h3>Пример по Таро с точной привязкой к жесту</h3>
+<section class="wm-prompt" aria-label="Пример заполнения / Таро"><div class="wm-prompt-head"><p class="wm-prompt-label">Пример заполнения / Таро</p><button type="button" class="wm-copy-prompt" data-copy-prompt="prompt-reels-template-tarot" aria-label="Скопировать промпт">Скопировать промпт</button></div><pre><code id="prompt-reels-template-tarot">Create a magical tarot effect for a vertical Reel.
+The effect should appear above the speaker’s open right palm.
+It should start when she says “И даже вот это”.
+The cards should fall from above into her hand.
+Then they should gather into a physical deck, and one selected card should rise and flip face-up to reveal The Magician.
+It should stay visible long enough to be clearly seen.
+Style: mystical, premium, elegant, soft rose-pink glow, cinematic.
+Important: the cards must clearly fall from above; no random floating cards; no extra text labels.</code></pre></section>
+<h2>Три категории эффектов для любых ниш</h2>
+<ul>
+<li><strong>UI и интерфейсы:</strong> цифры, графики, счётчики, аналитические дашборды.</li>
+<li><strong>Медиа-объекты:</strong> всплывающие Reels, карточки, рамки и превью.</li>
+<li><strong>Магические и нишевые эффекты:</strong> Таро, продукты, предметы и визуальные трансформации.</li>
+</ul>
+<h2>Как отдать это монтажному AI и не получить хаос</h2>
+<p>Передай исходное вертикальное видео, этот промпт, нужные значения счётчика и изображения для карточек. Попроси агента определить <strong>точный момент реплики и положение ладони</strong> и показать предварительную сборку перед финальным экспортом. Генеративному видеоинструменту может понадобиться дополнительная работа по маскам, трекингу и покадровой синхронизации: один только текстовый промпт не гарантирует точного совпадения с движением рук.</p>
+<p>В финале проверь три вещи: эффект начинается на правильном слове, объект остаётся привязанным к жесту, а зритель успевает прочитать или рассмотреть результат. <strong>Хороший промпт для эффекта — не идея, а режиссура.</strong></p>
+<div class="news-source"><p>Автор материала: WATCH•ME CREATIVE. Практический урок с промптами для вертикальных видео, составленный по авторскому сценарию трёх эффектов. Обновлено 24 ноября 2026 года.</p></div>
 <div class="news-more"><a href="/news/">← Смотреть другие новости и уроки</a></div>
-</article><footer><span>© 2026 WATCH•ME CREATIVE</span><a href="/">Главная</a><a href="/news/">Новости ИИ</a></footer></main></body></html>
+</article><footer><span>© 2026 WATCH•ME CREATIVE</span><a href="/">Главная</a><a href="/news/">Новости ИИ</a></footer></main><script>
+document.querySelectorAll("[data-copy-prompt]").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    var block = document.getElementById(btn.getAttribute("data-copy-prompt"));
+    if (!block) return;
+    var text = block.textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = "Скопировано";
+        btn.setAttribute("aria-label", "Промпт скопирован");
+      }).catch(function(){ btn.textContent = "Выделите текст промпта"; });
+    } else {
+      btn.textContent = "Выделите текст промпта";
+    }
+  });
+});
+</script></body></html>
