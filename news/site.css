@@ -270,3 +270,13 @@ footer button:hover { color: var(--cream); }
   .news-copy p, .news-copy li { font-size: 15px; }
   .news-mobile-nav { display: block; padding: 8px 0 15px; font-size: 11px; font-weight: 400; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); }
 }
+
+
+/* Prompt copy utilities: reuse original Inter/Cormorant typography and colour tokens. */
+.wm-prompt { margin: 27px 0 36px; border: 1px solid var(--line); background: var(--ink-2); }
+.wm-prompt-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.news-copy .wm-prompt-label { color: var(--champagne); opacity: 1; font-size: 11px; font-weight: 400; letter-spacing: .2em; text-transform: uppercase; line-height: 1.5; margin: 0; }
+.wm-copy-prompt { background: transparent; border: 1px solid var(--line); color: var(--cream); font: 400 11px/1.35 var(--text); letter-spacing: .09em; padding: 9px 13px; cursor: pointer; }
+.wm-copy-prompt:hover, .wm-copy-prompt:focus-visible { border-color: var(--champagne); color: var(--champagne); }
+.news-copy .wm-prompt pre { margin: 0; border: 0; background: transparent; padding: 20px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.news-copy .wm-prompt code { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--text); font-size: 13px; line-height: 1.8; }
